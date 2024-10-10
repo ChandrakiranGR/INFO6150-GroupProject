@@ -7,6 +7,7 @@ import Footer from './footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import Home from "./pages/home/home";
+import Signup from "./pages/signup/Signup";
 const App = () => {
   return (
     <Router>
@@ -14,6 +15,7 @@ const App = () => {
       <Routes>
       <Route path="/" element={<Home/>} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup></Signup>} />
       </Routes>
       <Footer/>
     </Router>
