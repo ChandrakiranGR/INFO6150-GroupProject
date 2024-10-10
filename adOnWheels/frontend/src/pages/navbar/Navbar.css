@@ -1,3 +1,16 @@
 .custom-navbar-color {
   background-color: aqua;
+  height: 80px;
+  line-height: 80px;
+}
+.btn-login {
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.btn-login:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: #fff;
 }
