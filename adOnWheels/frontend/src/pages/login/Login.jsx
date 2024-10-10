@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import './Login.css';
-import { Modal, Button } from 'react-bootstrap';
-import { FaArrowLeft } from 'react-icons/fa';
+import React, { useState } from "react";
+import "./Login.css";
+import { Modal, Button } from "react-bootstrap";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Login = () => {
   const [show, setShow] = useState(false);
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -20,10 +20,10 @@ const Login = () => {
     setUsername(value);
 
     const regex = /^[a-zA-Z0-9._%+-]+@northeastern\.edu$/;
-    if (!regex.test(value) && value !== '') {
-      setError('Enter a Valid Email Address');
+    if (!regex.test(value) && value !== "") {
+      setError("Enter a Valid Email Address");
     } else {
-      setError('');
+      setError("");
     }
   };
 
@@ -31,7 +31,7 @@ const Login = () => {
     event.preventDefault();
 
     if (!error) {
-      alert('Login successful!');
+      alert("Login successful!");
     }
   };
 
@@ -39,7 +39,11 @@ const Login = () => {
     <div className="login-container d-flex justify-content-center align-items-center">
       <div className="card p-4">
         <div className="d-flex justify-content-center align-items-center mb-4 position-relative">
-          <button className="btn btn-link back-btn" onClick={goBack} style={{ textDecoration: 'none' }}>
+          <button
+            className="btn btn-link back-btn"
+            onClick={goBack}
+            style={{ textDecoration: "none" }}
+          >
             <FaArrowLeft /> Back
           </button>
           <h2 className="login-heading">Login</h2>
@@ -48,7 +52,9 @@ const Login = () => {
           <form onSubmit={handleSubmit}>
             <div className="row mt-3 text-start">
               <div className="col-12">
-                <label htmlFor="email" className="form-label">Email Address</label>
+                <label htmlFor="email" className="form-label">
+                  Email Address
+                </label>
                 <input
                   type="text"
                   id="email"
@@ -60,7 +66,9 @@ const Login = () => {
                 {error && <p className="text-danger">{error}</p>}
               </div>
               <div className="col-12">
-                <label htmlFor="password" className="form-label">Password</label>
+                <label htmlFor="password" className="form-label">
+                  Password
+                </label>
                 <input
                   type="password"
                   id="password"
@@ -76,10 +84,14 @@ const Login = () => {
             </div>
             <div className="d-flex justify-content-between">
               <p className="text-muted">
-                <a href="#" onClick={handleShow}>Forgot Password?</a>
+                <a href="#" onClick={handleShow}>
+                  Forgot Password?
+                </a>
               </p>
               <p className="text-muted">
-                <a href="#">Create Account</a>
+                <a href="/signup" to="/login">
+                  Create Account
+                </a>
               </p>
             </div>
           </form>
