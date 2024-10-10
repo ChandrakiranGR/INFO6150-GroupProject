@@ -38,6 +38,9 @@ img {
   border: 3px solid rgb(248, 248, 248);
 }
 @media screen and (max-width: 768px) {
+  .landing {
+    margin-top: 90px;
+  }
   .desc-part {
     padding: 10px;
     align-items: center;
@@ -76,7 +79,8 @@ img {
     margin-top: 20px;
   } */
   .landing {
-    gap: 20px;
+    gap: 30px;
+    margin-top: 60px;
   }
   img {
     width: 300px;
