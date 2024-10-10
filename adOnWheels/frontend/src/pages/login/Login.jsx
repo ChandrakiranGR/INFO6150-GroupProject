@@ -89,7 +89,9 @@ const Login = () => {
                 </a>
               </p>
               <p className="text-muted">
-                <a href="#">Create Account</a>
+                <a href="/signup" to="/login">
+                  Create Account
+                </a>
               </p>
             </div>
           </form>
