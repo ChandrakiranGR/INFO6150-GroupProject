@@ -6,8 +6,6 @@ import Login from './pages/login/Login'
 import './pages/login/Login.css';
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-
 import Footer from './footer';
 
 function App() {
@@ -18,7 +16,7 @@ function App() {
      <Footer/>
 </div>
   )
-   
+
 }
 
 export default App
