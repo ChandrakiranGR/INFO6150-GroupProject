@@ -26,7 +26,7 @@ const adminSchema = new mongoose.Schema({
     {
       type: {
         type: String,
-        required: true, // e.g., "AdApproval", "ProposalResponse"
+        required: true,
       },
       message: {
         type: String,
