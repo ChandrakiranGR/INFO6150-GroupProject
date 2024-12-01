@@ -72,7 +72,6 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password, type } = req.body;
-
         const userModels = {
             Admin,
             Advertiser,
@@ -90,7 +89,8 @@ exports.loginUser = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
-        if (user.password !== password) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
             return res.status(401).json({ success: false, message: 'Invalid credentials.' });
         }
 
