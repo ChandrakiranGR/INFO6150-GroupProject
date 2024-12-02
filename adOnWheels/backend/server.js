@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
+const advertiserRoutes = require('./routes/advertiserRoutes');
+
 
 dotenv.config();
 
@@ -18,6 +20,8 @@ mongoose
 
 
 app.use('/api/auth', authRoutes);
+app.use('/api/advertiser', advertiserRoutes);
+
 
 app.get('/', (req, res) => res.send('AdOnWheels API is running...'));
 
