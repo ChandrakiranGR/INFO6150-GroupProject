@@ -25,14 +25,16 @@ const Login = () => {
   const handleUsernameChange = (event) => {
     const value = event.target.value;
     setUsername(value);
-
-    const regex = /^[a-zA-Z0-9._%+-]+@northeastern\.edu$/;
+  
+    // General email validation regex
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regex.test(value) && value !== "") {
-      setError("Enter a valid Northeastern email address.");
+      setError("Enter a valid email address.");
     } else {
       setError("");
     }
   };
+  
 
   const handlePasswordChange = (event) => {
     const value = event.target.value;
@@ -78,7 +80,21 @@ const Login = () => {
           console.log(data.token); // Store token in localStorage or state management for authentication.
 
           // Navigate to the /home endpoint
-          navigate("/");
+          switch (userType) {
+            case "Admin":
+              navigate("/admin");
+              break;
+            case "Advertiser":
+              navigate("/advertiser");
+              break;
+            case "Publisher":
+              navigate("/publisher");
+              break;
+            case "BodyShop":
+              navigate("/bodyshop");
+              break;
+            default:
+              navigate("/");}
         } else {
           setApiError(data.message || "An error occurred. Please try again.");
         }
