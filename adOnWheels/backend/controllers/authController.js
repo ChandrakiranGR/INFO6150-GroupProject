@@ -10,12 +10,23 @@ exports.registerUser = async (req, res) => {
         const { name, email, password, contactNumber, type, ...additionalDetails } = req.body;
 
         if (!name || !email || !password || !type) {
-            return res.status(400).json({ success: false, message: 'All required fields must be filled.' });
+            return res.status(400).json({ success: false, message: 'All required fields (name, email, password, type) must be provided.' });
         }
 
         const validTypes = ['Admin', 'Advertiser', 'Publisher', 'BodyShop'];
         if (!validTypes.includes(type)) {
-            return res.status(400).json({ success: false, message: 'Invalid user type.' });
+            return res.status(400).json({ success: false, message: 'Invalid user type. Allowed types are Admin, Advertiser, Publisher, or BodyShop.' });
+        }
+
+        const existingUser = await Promise.any([
+            Admin.findOne({ email }),
+            Advertiser.findOne({ email }),
+            Publisher.findOne({ email }),
+            BodyShop.findOne({ email }),
+        ]);
+
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'Email is already registered. Please use a different email.' });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -53,6 +64,8 @@ exports.registerUser = async (req, res) => {
                     ...additionalDetails,
                 });
                 break;
+            default:
+                return res.status(400).json({ success: false, message: 'Invalid user type.' });
         }
 
         const token = jwt.sign({ id: user._id, type }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -64,41 +77,56 @@ exports.registerUser = async (req, res) => {
             type,
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Server error' });
+        console.error('Error during user registration:', error.message);
+
+        if (error.code === 11000) {
+            return res.status(400).json({ success: false, message: 'Email is already registered. Please use a different email.' });
+        }
+
+        res.status(500).json({ success: false, message: 'Internal server error. Please try again later.' });
     }
 };
 
 exports.loginUser = async (req, res) => {
     try {
         const { email, password, type } = req.body;
+
+        if (!email || !password || !type) {
+            return res.status(400).json({ success: false, message: 'All required fields (email, password, type) must be provided.' });
+        }
+
         const userModels = {
             Admin,
             Advertiser,
             Publisher,
             BodyShop,
         };
-
         const UserModel = userModels[type];
         if (!UserModel) {
-            return res.status(400).json({ success: false, message: 'Invalid user type.' });
+            return res.status(400).json({ success: false, message: 'Invalid user type. Allowed types are Admin, Advertiser, Publisher, or BodyShop.' });
         }
 
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found.' });
+            return res.status(404).json({ success: false, message: 'User not found. Please register before logging in.' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+            return res.status(401).json({ success: false, message: 'Invalid credentials. Please check your email and password.' });
         }
 
         const token = jwt.sign({ id: user._id, type }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-        res.status(200).json({ success: true, message: 'Login successful', token, type });
+        res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            token,
+            type,
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Server error' });
+        console.error('Error during user login:', error.message);
+
+        res.status(500).json({ success: false, message: 'Internal server error. Please try again later.' });
     }
 };

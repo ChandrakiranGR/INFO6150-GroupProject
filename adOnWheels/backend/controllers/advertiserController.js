@@ -1,25 +1,29 @@
-const Advertisement = require('../models/advertiser');
+const Advertiser = require('../models/advertiser');
 const Proposal = require('../models/Proposal');
 
 exports.createAd = async (req, res) => {
     try {
         const { title, description, startDate, endDate, budget } = req.body;
 
-        // Validate request body
+        console.log("Request Body:", req.body);
+        console.log("Authenticated User (req.user):", req.user);
+
         if (!title || !description || !startDate || !endDate || !budget) {
             return res.status(400).json({ success: false, message: 'All fields are required.' });
         }
 
-        // Simulate getting the advertiser (e.g., via auth middleware or dummy ID)
-        const advertiserId = "64bfc6b1fcd8d3e7c8abcd12"; // Replace with the authenticated user's ID
+        if (!req.user || !req.user.id) {
+            console.error("Authenticated user ID is missing from the request.");
+            return res.status(401).json({ success: false, message: 'Unauthorized access.' });
+        }
 
-        // Find the advertiser
+        const advertiserId = req.user.id;
         const advertiser = await Advertiser.findById(advertiserId);
+        console.log("Advertiser found in DB:", advertiser);
+
         if (!advertiser) {
             return res.status(404).json({ success: false, message: 'Advertiser not found.' });
         }
-
-        // Create and add the ad
         const newAd = {
             title,
             description,
@@ -29,41 +33,68 @@ exports.createAd = async (req, res) => {
         };
         advertiser.ads.push(newAd);
 
-        // Save the advertiser with the new ad
         await advertiser.save();
 
         res.status(201).json({ success: true, message: 'Ad created successfully.', ad: newAd });
     } catch (error) {
-        console.error('Error in createAd:', error.message);
+        console.error("Error in createAd:", error.message);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 };
 
 
-// Get All Advertisements
 exports.getAllAds = async (req, res) => {
     try {
-        const ads = await Advertisement.find({ advertiserId: req.user.id });
-        res.status(200).json({ success: true, ads });
+        const advertiser = await Advertiser.findById(req.user.id);
+        if (!advertiser) {
+            return res.status(404).json({ success: false, message: 'Advertiser not found.' });
+        }
+        res.status(200).json({ success: true, ads: advertiser.ads });
     } catch (error) {
+        console.error("Error in getAllAds:", error.message);
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
 
-// Get Advertisement by ID
+
 exports.getAdById = async (req, res) => {
     try {
-        const ad = await Advertisement.findById(req.params.adId);
-        if (!ad || ad.advertiserId.toString() !== req.user.id) {
-            return res.status(404).json({ success: false, message: 'Ad not found' });
+        console.log("Authenticated User ID:", req.user.id);
+        console.log("Ad ID in params:", req.params.adId);
+
+        if (!req.params.adId) {
+            return res.status(400).json({ success: false, message: 'Ad ID is required.' });
         }
+
+        const advertiser = await Advertiser.findById(req.user.id);
+
+        if (!advertiser) {
+            return res.status(404).json({ success: false, message: 'Advertiser not found. Please ensure you are logged in with the correct account.' });
+        }
+        const ad = advertiser.ads.id(req.params.adId);
+
+        if (!ad) {
+            return res.status(404).json({ success: false, message: 'Ad not found. Please check the Ad ID.' });
+        }
+
         res.status(200).json({ success: true, ad });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Server error' });
+        console.error("Error in getAdById:", error);
+
+        if (error.name === 'CastError') {
+            return res.status(400).json({ success: false, message: 'Invalid Ad ID format. Please provide a valid ID.' });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: 'An unexpected error occurred while retrieving the ad. Please try again later.',
+            errorDetails: process.env.NODE_ENV === 'development' ? error.message : undefined, // Only show detailed error in development
+        });
     }
 };
 
-// Get All Proposals
+
+
 exports.getProposals = async (req, res) => {
     try {
         const proposals = await Proposal.find({ advertiserId: req.user.id });
@@ -73,7 +104,6 @@ exports.getProposals = async (req, res) => {
     }
 };
 
-// Approve or Decline Proposal
 exports.updateProposal = async (req, res) => {
     try {
         const proposal = await Proposal.findById(req.params.proposalId);
