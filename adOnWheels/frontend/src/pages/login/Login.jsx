@@ -25,14 +25,16 @@ const Login = () => {
   const handleUsernameChange = (event) => {
     const value = event.target.value;
     setUsername(value);
-
-    const regex = /^[a-zA-Z0-9._%+-]+@northeastern\.edu$/;
+  
+    // General email validation regex
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regex.test(value) && value !== "") {
-      setError("Enter a valid Northeastern email address.");
+      setError("Enter a valid email address.");
     } else {
       setError("");
     }
   };
+  
 
   const handlePasswordChange = (event) => {
     const value = event.target.value;
