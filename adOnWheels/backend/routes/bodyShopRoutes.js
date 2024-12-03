@@ -1,6 +1,5 @@
 const express = require('express');
 const {
-    registerBodyShop,
     getAssignedTasks,
     updateTaskStatus,
     assignTask,
