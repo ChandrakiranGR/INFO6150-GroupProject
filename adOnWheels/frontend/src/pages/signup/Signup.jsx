@@ -22,26 +22,34 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name.startsWith('vehicleDetails')) {
-      const index = parseInt(name.split('-')[1]);
-      const fieldName = name.split('-')[0].replace('vehicleDetails', '').toLowerCase();
+      const index = parseInt(name.split('-')[1], 10);
+      const fieldName = name.split('-')[2];
       setFormData((prev) => {
         const newVehicleDetails = [...prev.vehicleDetails];
         newVehicleDetails[index] = { ...newVehicleDetails[index], [fieldName]: value };
         return { ...prev, vehicleDetails: newVehicleDetails };
       });
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
 
   const handleAddVehicleDetail = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      vehicleDetails: [...prev.vehicleDetails, { make: '', model: '', licensePlate: '', type: '' }]
+      vehicleDetails: [...prev.vehicleDetails, { make: '', model: '', licensePlate: '', type: '' }],
     }));
+  };
+
+  const handleRemoveVehicleDetail = (index) => {
+    setFormData((prev) => {
+      const newVehicleDetails = [...prev.vehicleDetails];
+      newVehicleDetails.splice(index, 1);
+      return { ...prev, vehicleDetails: newVehicleDetails };
+    });
   };
 
   const validateForm = () => {
@@ -107,13 +115,12 @@ const Signup = () => {
         payload.workshopAddress = formData.workshopAddress.trim();
       }
 
-      // Send API request to register the user
       const response = await fetch('http://localhost:5001/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -122,20 +129,17 @@ const Signup = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Store authentication details
       localStorage.setItem('token', data.token);
       localStorage.setItem('userType', data.type);
 
-      // Redirect based on user type
       const redirectMap = {
-        'Admin': '/admin-dashboard',
-        'Advertiser': '/advertiser-dashboard',
-        'Publisher': '/publisher-dashboard',
-        'BodyShop': '/bodyshop-dashboard'
+        Admin: '/admin-dashboard',
+        Advertiser: '/advertiser-dashboard',
+        Publisher: '/publisher-dashboard',
+        BodyShop: '/bodyshop-dashboard',
       };
 
       window.location.href = redirectMap[data.type] || '/dashboard';
-
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
@@ -230,12 +234,19 @@ const Signup = () => {
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter vehicle type"
                 />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveVehicleDetail(index)}
+                  className="mt-2 text-red-500 hover:underline"
+                >
+                  Remove Vehicle
+                </button>
               </div>
             ))}
             <button
               type="button"
               onClick={handleAddVehicleDetail}
-              className="mb-4 text-blue-500"
+              className="mb-4 text-blue-500 hover:underline"
             >
               Add Vehicle
             </button>
@@ -272,7 +283,9 @@ const Signup = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="name" className="block mb-2 text-sm font-medium">Full Name</label>
+            <label htmlFor="name" className="block mb-2 text-sm font-medium">
+              Full Name
+            </label>
             <input
               type="text"
               id="name"
@@ -280,12 +293,13 @@ const Signup = () => {
               value={formData.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter full name"
+              placeholder="Enter your full name"
             />
           </div>
-
           <div className="mb-4">
-            <label htmlFor="email" className="block mb-2 text-sm font-medium">Email Address</label>
+            <label htmlFor="email" className="block mb-2 text-sm font-medium">
+              Email
+            </label>
             <input
               type="email"
               id="email"
@@ -293,25 +307,13 @@ const Signup = () => {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter email"
+              placeholder="Enter your email"
             />
           </div>
-
           <div className="mb-4">
-            <label htmlFor="contactNumber" className="block mb-2 text-sm font-medium">Contact Number</label>
-            <input
-              type="text"
-              id="contactNumber"
-              name="contactNumber"
-              value={formData.contactNumber}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter contact number"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="password" className="block mb-2 text-sm font-medium">Password</label>
+            <label htmlFor="password" className="block mb-2 text-sm font-medium">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -319,12 +321,13 @@ const Signup = () => {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
+              placeholder="Enter your password"
             />
           </div>
-
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium">Confirm Password</label>
+            <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium">
+              Confirm Password
+            </label>
             <input
               type="password"
               id="confirmPassword"
@@ -332,12 +335,27 @@ const Signup = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Confirm password"
+              placeholder="Confirm your password"
             />
           </div>
-
           <div className="mb-4">
-            <label htmlFor="type" className="block mb-2 text-sm font-medium">User Type</label>
+            <label htmlFor="contactNumber" className="block mb-2 text-sm font-medium">
+              Contact Number
+            </label>
+            <input
+              type="text"
+              id="contactNumber"
+              name="contactNumber"
+              value={formData.contactNumber}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter your contact number"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="type" className="block mb-2 text-sm font-medium">
+              User Type
+            </label>
             <select
               id="type"
               name="type"
@@ -345,21 +363,21 @@ const Signup = () => {
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select User Type</option>
-              {USER_TYPES.map(type => (
-                <option key={type} value={type}>{type}</option>
+              <option value="">Select user type</option>
+              {USER_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
               ))}
             </select>
           </div>
-
           {renderTypeSpecificFields()}
-
           <button
             type="submit"
-            className="w-full py-2 mt-4 bg-blue-500 text-white rounded-md focus:outline-none hover:bg-blue-600"
+            className="w-full py-2 px-4 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
           >
-            {isLoading ? 'Registering...' : 'Register'}
+            {isLoading ? 'Registering...' : 'Sign Up'}
           </button>
         </form>
       </div>
