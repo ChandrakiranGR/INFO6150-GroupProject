@@ -80,7 +80,21 @@ const Login = () => {
           console.log(data.token); // Store token in localStorage or state management for authentication.
 
           // Navigate to the /home endpoint
-          navigate("/");
+          switch (userType) {
+            case "Admin":
+              navigate("/admin");
+              break;
+            case "Advertiser":
+              navigate("/advertiser");
+              break;
+            case "Publisher":
+              navigate("/publisher");
+              break;
+            case "BodyShop":
+              navigate("/bodyshop");
+              break;
+            default:
+              navigate("/");}
         } else {
           setApiError(data.message || "An error occurred. Please try again.");
         }
