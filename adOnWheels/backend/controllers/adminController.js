@@ -11,17 +11,18 @@ exports.setPriceForAd = async (req, res) => {
         const { advertiserId, adminPrice } = req.body;
 
         if (!adminPrice || adminPrice <= 0) {
-            return res.status(400).json({ success: false, message: 'Valid admin price is required.' });
+            return res.status(400).json({
+                success: false,
+                message: 'Valid admin price is required and must be greater than 0.',
+            });
         }
 
         const advertiser = await Advertiser.findById(advertiserId);
-
         if (!advertiser) {
             return res.status(404).json({ success: false, message: 'Advertiser not found.' });
         }
 
         const ad = advertiser.ads.id(adId);
-
         if (!ad) {
             return res.status(404).json({ success: false, message: 'Ad not found.' });
         }
@@ -31,25 +32,33 @@ exports.setPriceForAd = async (req, res) => {
 
         await advertiser.save();
 
-        res.status(200).json({ success: true, message: 'Price set successfully.', ad });
+        res.status(200).json({
+            success: true,
+            message: 'Price set successfully.',
+            ad,
+        });
     } catch (error) {
         console.error('Error in setPriceForAd:', error.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
+
+        if (error.name === 'CastError') {
+            return res.status(400).json({ success: false, message: 'Invalid advertiser or ad ID format.' });
+        }
+
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
+
 
 // Admin views ads by status
 exports.getAdsByStatus = async (req, res) => {
     try {
         const { status } = req.query;
 
-        // Optional: Filter ads by status
         const query = status ? { 'ads.status': status } : {};
-
         const advertisers = await Advertiser.find(query, 'name email companyName ads');
 
         if (!advertisers || advertisers.length === 0) {
-            return res.status(404).json({ success: false, message: 'No ads found.' });
+            return res.status(404).json({ success: false, message: 'No ads found matching the given status.' });
         }
 
         const ads = advertisers.flatMap((advertiser) =>
@@ -66,9 +75,11 @@ exports.getAdsByStatus = async (req, res) => {
         res.status(200).json({ success: true, ads });
     } catch (error) {
         console.error('Error in getAdsByStatus:', error.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
+
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
+
 
 // Admin creates a proposal
 exports.createProposal = async (req, res) => {
@@ -76,7 +87,27 @@ exports.createProposal = async (req, res) => {
         const { adId, advertiserId, finalPrice } = req.body;
 
         if (!adId || !advertiserId || !finalPrice) {
-            return res.status(400).json({ success: false, message: 'All fields are required.' });
+            return res.status(400).json({
+                success: false,
+                message: 'All fields (adId, advertiserId, finalPrice) are required.',
+            });
+        }
+
+        if (finalPrice <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Final price must be greater than 0.',
+            });
+        }
+
+        const advertiser = await Advertiser.findById(advertiserId);
+        if (!advertiser) {
+            return res.status(404).json({ success: false, message: 'Advertiser not found.' });
+        }
+
+        const ad = advertiser.ads.id(adId);
+        if (!ad) {
+            return res.status(404).json({ success: false, message: 'Ad not found.' });
         }
 
         const proposal = await Proposal.create({
@@ -86,12 +117,22 @@ exports.createProposal = async (req, res) => {
             finalPrice,
         });
 
-        res.status(201).json({ success: true, message: 'Proposal created successfully.', proposal });
+        res.status(201).json({
+            success: true,
+            message: 'Proposal created successfully.',
+            proposal,
+        });
     } catch (error) {
         console.error('Error in createProposal:', error.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
+
+        if (error.name === 'CastError') {
+            return res.status(400).json({ success: false, message: 'Invalid ad or advertiser ID format.' });
+        }
+
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
+
 
 // Admin views all publishers
 exports.getAllPublishers = async (req, res) => {
@@ -115,11 +156,20 @@ exports.assignAdToPublisher = async (req, res) => {
         const { adId, publisherId, payment } = req.body;
 
         if (!adId || !publisherId || !payment) {
-            return res.status(400).json({ success: false, message: 'All fields are required.' });
+            return res.status(400).json({
+                success: false,
+                message: 'All fields (adId, publisherId, payment) are required.',
+            });
+        }
+
+        if (payment <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Payment must be greater than 0.',
+            });
         }
 
         const publisher = await Publisher.findById(publisherId);
-
         if (!publisher) {
             return res.status(404).json({ success: false, message: 'Publisher not found.' });
         }
@@ -135,9 +185,15 @@ exports.assignAdToPublisher = async (req, res) => {
         res.status(201).json({ success: true, message: 'Ad assigned to publisher successfully.' });
     } catch (error) {
         console.error('Error in assignAdToPublisher:', error.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
+
+        if (error.name === 'CastError') {
+            return res.status(400).json({ success: false, message: 'Invalid ad or publisher ID format.' });
+        }
+
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
+
 
 // Admin views all body shops
 exports.getAllBodyShops = async (req, res) => {

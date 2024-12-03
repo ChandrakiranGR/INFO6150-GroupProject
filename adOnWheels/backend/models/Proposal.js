@@ -1,36 +1,34 @@
 const mongoose = require('mongoose');
 
-const proposalSchema = new mongoose.Schema(
-    {
-        adId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Advertisement',
-            required: true,
-        },
-        advertiserId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Advertiser',
-            required: true,
-        },
-        proposedAmount: {
-            type: Number,
-            required: true,
-        },
-        status: {
-            type: String,
-            enum: ['Pending', 'Approved', 'Declined'],
-            default: 'Pending',
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now,
-        },
+const proposalSchema = new mongoose.Schema({
+    adId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Advertiser.ads',
+        required: true
     },
-    { timestamps: true }
-);
+    advertiserId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Advertiser',
+        required: true
+    },
+    adminId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Admin',
+        required: true
+    },
+    finalPrice: {
+        type: Number,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Rejected'],
+        default: 'Pending'
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now
+    }
+});
 
 module.exports = mongoose.model('Proposal', proposalSchema);
