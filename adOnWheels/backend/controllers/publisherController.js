@@ -2,33 +2,6 @@ const Publisher = require('../models/publisher');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-exports.registerPublisher = async (req, res) => {
-    try {
-        const { name, email, password, contactNumber, vehicleDetails } = req.body;
-
-        if (!name || !email || !password || !contactNumber || !vehicleDetails) {
-            return res.status(400).json({ success: false, message: 'All fields are required.' });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const publisher = await Publisher.create({
-            name,
-            email,
-            password: hashedPassword,
-            contactNumber,
-            vehicleDetails,
-        });
-
-        const token = jwt.sign({ id: publisher._id, type: 'Publisher' }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-        res.status(201).json({ success: true, message: 'Publisher registered successfully.', token });
-    } catch (error) {
-        console.error('Error in registerPublisher:', error.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
-    }
-};
 
 exports.getAdOpportunities = async (req, res) => {
     try {

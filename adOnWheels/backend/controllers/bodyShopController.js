@@ -2,32 +2,6 @@ const BodyShop = require('../models/bodyShop');
 const BodyShopTask = require('../models/bodyShopTask');
 const jwt = require('jsonwebtoken');
 
-exports.registerBodyShop = async (req, res) => {
-    try {
-        const { name, email, password, contactNumber, address } = req.body;
-
-        if (!name || !email || !password || !contactNumber || !address) {
-            return res.status(400).json({ success: false, message: 'All fields are required.' });
-        }
-
-        const bodyShop = new BodyShop({
-            name,
-            email,
-            password,
-            contactNumber,
-            address,
-        });
-
-        await bodyShop.save();
-
-        const token = jwt.sign({ id: bodyShop._id, type: 'BodyShop' }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-        res.status(201).json({ success: true, message: 'BodyShop registered successfully.', token });
-    } catch (error) {
-        console.error('Error in registerBodyShop:', error.message);
-        res.status(500).json({ success: false, message: 'Server error.' });
-    }
-};
 
 exports.getAssignedTasks = async (req, res) => {
     try {
