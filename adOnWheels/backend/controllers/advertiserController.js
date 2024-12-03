@@ -117,3 +117,36 @@ exports.updateProposal = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
+exports.respondToPrice = async (req, res) => {
+    try {
+        const { adId } = req.params;
+        const { status } = req.body;
+
+        if (!['Approved', 'Rejected'].includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status. Use "Approved" or "Rejected".' });
+        }
+
+        const advertiser = await Advertiser.findById(req.user.id);
+
+        if (!advertiser) {
+            return res.status(404).json({ success: false, message: 'Advertiser not found.' });
+        }
+
+        const ad = advertiser.ads.id(adId);
+
+        if (!ad) {
+            return res.status(404).json({ success: false, message: 'Ad not found.' });
+        }
+
+        // Update status based on advertiser's response
+        ad.status = status === 'Approved' ? 'Ready for Publishing' : 'Rejected';
+
+        await advertiser.save();
+
+        res.status(200).json({ success: true, message: `Ad ${status.toLowerCase()} successfully.`, ad });
+    } catch (error) {
+        console.error('Error in respondToPrice:', error.message);
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+};

@@ -6,6 +6,7 @@ const advertiserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     contactNumber: { type: String, default: null },
+    role: { type: String, default: 'Advertiser' },
     companyName: { type: String, default: null },
     address: { type: String, default: null },
     ads: [
@@ -14,11 +15,12 @@ const advertiserSchema = new mongoose.Schema({
             description: { type: String, required: true },
             startDate: { type: Date, required: true },
             endDate: { type: Date, required: true },
-            budget: { type: Number, required: true },
+            budget: { type: Number, required: true }, // Proposed budget by advertiser
+            adminPrice: { type: Number, default: null }, // Price set by admin
             status: {
                 type: String,
-                enum: ['Pending', 'Approved', 'Live', 'Completed', 'Declined'],
-                default: 'Pending',
+                enum: ['Pending Approval', 'Price Sent', 'Approved', 'Rejected', 'Ready for Publishing'],
+                default: 'Pending Approval',
             },
             createdAt: { type: Date, default: Date.now },
         },
