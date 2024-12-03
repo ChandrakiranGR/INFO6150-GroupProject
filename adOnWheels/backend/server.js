@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const advertiserRoutes = require('./routes/advertiserRoutes');
 
@@ -8,7 +9,7 @@ const advertiserRoutes = require('./routes/advertiserRoutes');
 dotenv.config();
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
