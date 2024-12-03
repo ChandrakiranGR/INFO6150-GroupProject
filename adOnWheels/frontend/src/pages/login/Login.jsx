@@ -67,6 +67,12 @@ const Login = () => {
         });
 
         const data = await response.json();
+        console.log("Login Request Payload:", {
+          email: username,
+          password: password,
+          type: userType,
+        });
+        
         if (response.ok) {
           alert(`Login successful! Welcome, ${userType}`);
           console.log(data.token); // Store token in localStorage or state management for authentication.
