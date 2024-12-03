@@ -115,31 +115,65 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-  try {
-    const { email, password, type } = req.body;
+    try {
+        const { email, password, type } = req.body;
 
-    if (!email || !password || !type) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "All required fields (email, password, type) must be provided.",
-      });
-    }
+        if (!email?.trim() || !password?.trim() || !type?.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields (email, password, type) are required.',
+            });
+        }
 
-    const userModels = {
-      Admin,
-      Advertiser,
-      Publisher,
-      BodyShop,
-    };
-    const UserModel = userModels[type];
-    console.log(UserModel);
-    if (!UserModel) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid user type. Allowed types are Admin, Advertiser, Publisher, or BodyShop.",
-      });
+        const userModels = {
+            Admin,
+            Advertiser,
+            Publisher,
+            BodyShop,
+        };
+
+        const UserModel = userModels[type];
+        if (!UserModel) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user type. Allowed types are Admin, Advertiser, Publisher, or BodyShop.',
+            });
+        }
+
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found. Please check your credentials or register.',
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid credentials. Please check your email and password.',
+            });
+        }
+
+        const token = jwt.sign(
+            { id: user._id, type },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+        res.status(200).json({
+            success: true,
+            message: 'Login successful.',
+            token,
+            type,
+        });
+    } catch (error) {
+        console.error('Error during user login:', error.message);
+
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error. Please try again later.',
+        });
     }
 
     const user = await UserModel.findOne({ email });

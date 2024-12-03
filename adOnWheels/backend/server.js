@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const advertiserRoutes = require('./routes/advertiserRoutes');
+const bodyShopRoutes = require('./routes/bodyShopRoutes');
+const publisherRoutes = require('./routes/publisherRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 
 dotenv.config();
@@ -22,6 +25,10 @@ mongoose
 
 app.use('/api/auth', authRoutes);
 app.use('/api/advertiser', advertiserRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/bodyshops', bodyShopRoutes);
+app.use('/api/publishers', publisherRoutes);
+
 
 
 app.get('/', (req, res) => res.send('AdOnWheels API is running...'));
