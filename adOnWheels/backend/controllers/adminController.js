@@ -10,6 +10,10 @@ exports.setPriceForAd = async (req, res) => {
         const { adId } = req.params;
         const { advertiserId, adminPrice } = req.body;
 
+        console.log('Ad ID:', adId);
+        console.log('Advertiser ID:', advertiserId);
+        console.log('Admin Price:', adminPrice);
+
         if (!adminPrice || adminPrice <= 0) {
             return res.status(400).json({
                 success: false,
@@ -19,17 +23,20 @@ exports.setPriceForAd = async (req, res) => {
 
         const advertiser = await Advertiser.findById(advertiserId);
         if (!advertiser) {
+            console.log('Advertiser not found');
             return res.status(404).json({ success: false, message: 'Advertiser not found.' });
         }
 
         const ad = advertiser.ads.id(adId);
         if (!ad) {
+            console.log('Ad not found');
             return res.status(404).json({ success: false, message: 'Ad not found.' });
         }
 
         ad.adminPrice = adminPrice;
-        ad.status = 'Price Sent';
+        ad.status = 'Pending Approval';
 
+        console.log('Updating advertiser data...');
         await advertiser.save();
 
         res.status(200).json({
@@ -41,10 +48,16 @@ exports.setPriceForAd = async (req, res) => {
         console.error('Error in setPriceForAd:', error.message);
 
         if (error.name === 'CastError') {
-            return res.status(400).json({ success: false, message: 'Invalid advertiser or ad ID format.' });
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid advertiser or ad ID format.',
+            });
         }
 
-        res.status(500).json({ success: false, message: 'Internal server error.' });
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
     }
 };
 

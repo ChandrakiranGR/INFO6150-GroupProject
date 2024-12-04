@@ -23,8 +23,8 @@ const advertiserSchema = new mongoose.Schema({
             adminPrice: { type: Number, default: null },
             status: {
                 type: String,
-                enum: ['Pending Approval', 'Price Sent', 'Approved', 'Rejected', 'Ready for Publishing'],
-                default: 'Pending Approval',
+                enum: ['Pending', 'Pending Approval', 'Approved', 'Rejected', 'Ready for Publishing'],
+                default: 'Pending',
             },
             createdAt: { type: Date, default: Date.now },
         },
