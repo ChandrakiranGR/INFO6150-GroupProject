@@ -233,3 +233,23 @@ exports.assignTaskToBodyShop = async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 };
+
+exports.getDashboardStats = async (req, res) => {
+    try {
+      const totalAds = await Advertiser.aggregate([{ $unwind: "$ads" }, { $count: "totalAds" }]);
+      const totalPublishers = await Publisher.countDocuments();
+      const totalBodyShops = await BodyShop.countDocuments();
+      const pendingTasks = await BodyShopTask.countDocuments({ status: "Pending" });
+  
+      res.status(200).json({
+        adsCount: totalAds[0]?.totalAds || 0,
+        publishersCount: totalPublishers || 0,
+        bodyShopsCount: totalBodyShops || 0,
+        pendingTasks: pendingTasks || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error.message);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  };
+  

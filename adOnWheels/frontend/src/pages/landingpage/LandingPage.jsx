@@ -3,6 +3,7 @@ import { Container, Button } from "react-bootstrap";
 import Badge from "react-bootstrap/Badge";
 import heroImg from "../../assets/hero.jpeg";
 import "./LandingPage.css";
+import Navbarr from "../navbar/Navbarr";
 const LandingPage = () => {
   return (
     // <Container
@@ -63,11 +64,13 @@ const LandingPage = () => {
     //     </Col>
     //   </Row>
     // </Container>
+    
     <Container
       fluid
       className="d-flex align-items-center flex-column flex-md-row landing"
       style={{ height: "100vh" }}
     >
+      <Navbarr />
       <div className="d-flex flex-column desc-part gap-2">
         <h1 className="line-1">
           Welcome to{" "}
@@ -89,7 +92,7 @@ const LandingPage = () => {
         style={{ maxWidth: "500px" }}
       >
         <img
-          src={heroImg} // Replace with your hero image URL
+          src={heroImg}
           alt="Hero"
           style={{ maxWidth: "100%", height: "auto" }}
         />
