@@ -8,10 +8,12 @@ const Signup = () => {
     confirmPassword: '',
     contactNumber: '',
     type: '',
-    companyName: '',
     address: '',
-    vehicleDetails: [{ make: '', model: '', licensePlate: '', type: '' }],
-    workshopAddress: ''
+    vehicleDetails: {
+      vehicleType: '',
+      vehicleNumber: '',
+      location: '',
+    },
   });
 
   const [error, setError] = useState('');
@@ -22,34 +24,20 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name.startsWith('vehicleDetails')) {
-      const index = parseInt(name.split('-')[1], 10);
-      const fieldName = name.split('-')[2];
-      setFormData((prev) => {
-        const newVehicleDetails = [...prev.vehicleDetails];
-        newVehicleDetails[index] = { ...newVehicleDetails[index], [fieldName]: value };
-        return { ...prev, vehicleDetails: newVehicleDetails };
-      });
+      const fieldName = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        vehicleDetails: {
+          ...prev.vehicleDetails,
+          [fieldName]: value,
+        },
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
     }
-  };
-
-  const handleAddVehicleDetail = () => {
-    setFormData((prev) => ({
-      ...prev,
-      vehicleDetails: [...prev.vehicleDetails, { make: '', model: '', licensePlate: '', type: '' }],
-    }));
-  };
-
-  const handleRemoveVehicleDetail = (index) => {
-    setFormData((prev) => {
-      const newVehicleDetails = [...prev.vehicleDetails];
-      newVehicleDetails.splice(index, 1);
-      return { ...prev, vehicleDetails: newVehicleDetails };
-    });
   };
 
   const validateForm = () => {
@@ -86,6 +74,24 @@ const Signup = () => {
       return false;
     }
 
+    // Validate vehicle details for Publisher
+    if (formData.type === 'Publisher') {
+      if (!formData.vehicleDetails.vehicleType) {
+        setError('Vehicle Type is required for Publisher');
+        return false;
+      }
+
+      if (!formData.vehicleDetails.vehicleNumber) {
+        setError('Vehicle Number is required for Publisher');
+        return false;
+      }
+
+      if (!formData.vehicleDetails.location) {
+        setError('Vehicle Location is required for Publisher');
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -106,13 +112,19 @@ const Signup = () => {
         type: formData.type,
       };
 
-      if (formData.type === 'Advertiser') {
-        payload.companyName = formData.companyName.trim();
-        payload.address = formData.address.trim();
-      } else if (formData.type === 'Publisher') {
+      // Include vehicle details if user is a Publisher
+      if (formData.type === 'Publisher') {
         payload.vehicleDetails = formData.vehicleDetails;
-      } else if (formData.type === 'BodyShop') {
-        payload.workshopAddress = formData.workshopAddress.trim();
+      }
+
+      // For BodyShop, ensure address is provided
+      if (formData.type === 'BodyShop') {
+        if (!formData.address.trim()) {
+          setError('Address is required for BodyShop');
+          setIsLoading(false);
+          return;
+        }
+        payload.address = formData.address.trim();
       }
 
       const response = await fetch('http://localhost:5001/api/auth/register', {
@@ -143,134 +155,6 @@ const Signup = () => {
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
-    }
-  };
-
-  const renderTypeSpecificFields = () => {
-    switch (formData.type) {
-      case 'Advertiser':
-        return (
-          <>
-            <div className="mb-4">
-              <label htmlFor="companyName" className="block mb-2 text-sm font-medium">
-                Company Name
-              </label>
-              <input
-                type="text"
-                id="companyName"
-                name="companyName"
-                value={formData.companyName}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter company name"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="address" className="block mb-2 text-sm font-medium">
-                Address
-              </label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter address"
-              />
-            </div>
-          </>
-        );
-      case 'Publisher':
-        return (
-          <>
-            {formData.vehicleDetails.map((vehicle, index) => (
-              <div key={index} className="mb-4">
-                <label htmlFor={`make-${index}`} className="block mb-2 text-sm font-medium">
-                  Vehicle Make
-                </label>
-                <input
-                  type="text"
-                  id={`make-${index}`}
-                  name={`vehicleDetails-${index}-make`}
-                  value={vehicle.make}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle make"
-                />
-                <label htmlFor={`model-${index}`} className="block mb-2 text-sm font-medium">
-                  Vehicle Model
-                </label>
-                <input
-                  type="text"
-                  id={`model-${index}`}
-                  name={`vehicleDetails-${index}-model`}
-                  value={vehicle.model}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle model"
-                />
-                <label htmlFor={`licensePlate-${index}`} className="block mb-2 text-sm font-medium">
-                  Vehicle License Plate
-                </label>
-                <input
-                  type="text"
-                  id={`licensePlate-${index}`}
-                  name={`vehicleDetails-${index}-licensePlate`}
-                  value={vehicle.licensePlate}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle license plate"
-                />
-                <label htmlFor={`type-${index}`} className="block mb-2 text-sm font-medium">
-                  Vehicle Type
-                </label>
-                <input
-                  type="text"
-                  id={`type-${index}`}
-                  name={`vehicleDetails-${index}-type`}
-                  value={vehicle.type}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle type"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleRemoveVehicleDetail(index)}
-                  className="mt-2 text-red-500 hover:underline"
-                >
-                  Remove Vehicle
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={handleAddVehicleDetail}
-              className="mb-4 text-blue-500 hover:underline"
-            >
-              Add Vehicle
-            </button>
-          </>
-        );
-      case 'BodyShop':
-        return (
-          <div className="mb-4">
-            <label htmlFor="workshopAddress" className="block mb-2 text-sm font-medium">
-              Workshop Address
-            </label>
-            <input
-              type="text"
-              id="workshopAddress"
-              name="workshopAddress"
-              value={formData.workshopAddress}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter workshop address"
-            />
-          </div>
-        );
-      default:
-        return null;
     }
   };
 
@@ -363,7 +247,7 @@ const Signup = () => {
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select user type</option>
+              <option value="">Select User Type</option>
               {USER_TYPES.map((type) => (
                 <option key={type} value={type}>
                   {type}
@@ -371,14 +255,84 @@ const Signup = () => {
               ))}
             </select>
           </div>
-          {renderTypeSpecificFields()}
-          <button
-            type="submit"
-            className="w-full py-2 px-4 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Registering...' : 'Sign Up'}
-          </button>
+
+          {/* Publisher specific vehicle details */}
+          {formData.type === 'Publisher' && (
+            <>
+              <div className="mb-4">
+                <label htmlFor="vehicleDetails.vehicleType" className="block mb-2 text-sm font-medium">
+                  Vehicle Type
+                </label>
+                <input
+                  type="text"
+                  id="vehicleDetails.vehicleType"
+                  name="vehicleDetails.vehicleType"
+                  value={formData.vehicleDetails.vehicleType}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter vehicle type"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="vehicleDetails.vehicleNumber" className="block mb-2 text-sm font-medium">
+                  Vehicle Number
+                </label>
+                <input
+                  type="text"
+                  id="vehicleDetails.vehicleNumber"
+                  name="vehicleDetails.vehicleNumber"
+                  value={formData.vehicleDetails.vehicleNumber}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter vehicle number"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="vehicleDetails.location" className="block mb-2 text-sm font-medium">
+                  Vehicle Location
+                </label>
+                <input
+                  type="text"
+                  id="vehicleDetails.location"
+                  name="vehicleDetails.location"
+                  value={formData.vehicleDetails.location}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter vehicle location"
+                />
+              </div>
+            </>
+          )}
+
+          {/* BodyShop address field */}
+          {formData.type === 'BodyShop' && (
+            <div className="mb-4">
+              <label htmlFor="address" className="block mb-2 text-sm font-medium">
+                BodyShop Address
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter workshop address"
+              />
+            </div>
+          )}
+
+          <div className="mb-4">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+            >
+              {isLoading ? 'Signing Up...' : 'Sign Up'}
+            </button>
+          </div>
         </form>
       </div>
     </div>
