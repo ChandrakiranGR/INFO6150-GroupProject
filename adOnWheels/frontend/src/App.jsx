@@ -1,6 +1,6 @@
-import { useState } from "react";
+// app.jsx
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import LandingPage from "./pages/landingpage/LandingPage";
 import Navbarr from "./pages/navbar/Navbarr";
 import Login from "./pages/login/Login";
 import Footer from "./footer";
@@ -9,6 +9,8 @@ import React from "react";
 import Home from "./pages/home/home";
 import Signup from "./pages/signup/Signup";
 import CreateAd from "./pages/AdvertiserPages/CreateAd/CreateAd";
+import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard"; // Import the BodyShopDashboard component
+
 const App = () => {
   return (
     <Router>
@@ -16,11 +18,13 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup></Signup>} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/create" element={<CreateAd />} />
+        <Route path="/bodyshop-dashboard" element={<BodyShopDashboard />} /> {/* Add the route */}
       </Routes>
       <Footer />
     </Router>
   );
 };
+
 export default App;
