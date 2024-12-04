@@ -12,10 +12,10 @@ import ManageAds from './components/Admin/ManageAds';
 import ManagePublishers from './components/Admin/ManagePublishers';
 import ManageBodyShops from './components/Admin/ManageBodyShops';
 import AssignTasks from './components/Admin/AssignTasks';
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
-import ManageAds from './components/Advertiser/ManageAds';
-import ViewProposals from './components/Advertiser/ViewProposals';
+import ListAllAds from "./components/Advertiser/ListAllAds";
+// import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
+// import ManageAds from './components/Advertiser/ManageAds';
+// import ViewProposals from './components/Advertiser/ViewProposals';
 
 import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard"; // Import the BodyShopDashboard component
 import { loadToken } from "./redux/slices/authSlice";
@@ -34,16 +34,16 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/create" element={<CreateAd />} />
-        {/* <Route path="/admin" element={<AdminDashboard />} /> */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/manage-ads" element={<ManageAds />} />
         <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
         <Route path="/admin/manage-bodyshops" element={<ManageBodyShops />} />
         <Route path="/admin/assign-tasks" element={<AssignTasks />} />
+        <Route path="/ads" element={<ListAllAds />} />
 
-        <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
+        {/* <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
         <Route path="/advertiser/manage-ads" element={<ManageAds />} />
-        <Route path="/advertiser/view-proposals" element={<ViewProposals />} />
+        <Route path="/advertiser/view-proposals" element={<ViewProposals />} /> */}
         <Route
           path="/bodyshop-dashboard"
           element={<BodyShopDashboard />}
