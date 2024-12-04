@@ -1,48 +1,14 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const bodyShopSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  contactNumber: {
-    type: String,
-    required: true,
-  },
-  workshopAddress: {
-    type: String,
-    required: true,
-  },
-  tasksAssigned: [
-    {
-      taskId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'BodyShopTask',
-      },
-      status: {
-        type: String,
-        enum: ['Pending', 'Completed'],
-        default: 'Pending',
-      },
-      dateAssigned: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
-  dateCreated: {
-    type: Date,
-    default: Date.now,
-  },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    contactNumber: { type: String, required: true },
+    role: { type: String, default: 'BodyShop' },
+    address: { type: String, required: true },
+    dateCreated: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('BodyShop', bodyShopSchema);
