@@ -93,9 +93,9 @@ const BodyShopDashboard = () => {
 
         <FormControl
           sx={{
-            mt: 3, // Gap between the header and dropdown
+            mt: 3,
             mb: 3,
-            width: "300px", // Reduced width for the dropdown
+            width: "300px",
           }}
         >
           <InputLabel id="task-status-select-label">Filter by Task Status</InputLabel>
@@ -112,7 +112,6 @@ const BodyShopDashboard = () => {
           </Select>
         </FormControl>
 
-        {/* Use Grid layout for better responsiveness */}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TableContainer component={Paper}>
@@ -171,18 +170,16 @@ const BodyShopDashboard = () => {
         sx={{
           backgroundColor: "#212529",
           color: "#fff",
-          p: 2, // Reduced footer padding for a smaller size
+          p: 2,
           textAlign: "center",
         }}
       >
         <Typography variant="body1">About Us</Typography>
         <Typography variant="body2" sx={{ mb: 1 }}>
-          We are the perfect bridge for you to market and advertise your products to
-          reaching the right customers.
+          We are the perfect bridge for you to market and advertise your products
+          to reach the right customers.
         </Typography>
-        <Typography variant="body2">
-          © 2024 AdOnWheels. All Rights Reserved.
-        </Typography>
+        <Typography variant="body2">© 2024 AdOnWheels. All Rights Reserved.</Typography>
       </Box>
     </Box>
   );
