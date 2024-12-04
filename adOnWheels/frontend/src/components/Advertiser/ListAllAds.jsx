@@ -210,7 +210,20 @@ const ListAllAds = () => {
                                 {/* Accept or Deny Buttons for Admin */}
                                 {ad.status === 'Pending Approval' && (
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-                                        
+                                        <Button
+                                            sx={{
+                                                backgroundColor: '#4CAF50',
+                                                color: '#fff',
+                                                '&:hover': {
+                                                    backgroundColor: '#388E3C',
+                                                },
+                                                padding: '10px 20px',
+                                                fontWeight: '600',
+                                            }}
+                                            onClick={() => handleQuoteAction(ad._id, 'accept')}
+                                        >
+                                            Accept
+                                        </Button>
                                         <Button
                                             sx={{
                                                 backgroundColor: '#F44336',
