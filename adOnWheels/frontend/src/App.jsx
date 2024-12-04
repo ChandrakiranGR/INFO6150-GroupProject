@@ -12,6 +12,7 @@ import ManageAds from './components/Admin/ManageAds';
 import ManagePublishers from './components/Admin/ManagePublishers';
 import ManageBodyShops from './components/Admin/ManageBodyShops';
 import AssignTasks from './components/Admin/AssignTasks';
+
 // import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
 // import ManageAds from './components/Advertiser/ManageAds';
 // import ViewProposals from './components/Advertiser/ViewProposals';
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
         <Route path="/admin/manage-bodyshops" element={<ManageBodyShops />} />
         <Route path="/admin/assign-tasks" element={<AssignTasks />} />
+        <Route path="/ads" element={<ListAllAds />} />
 
         {/* <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
         <Route path="/advertiser/manage-ads" element={<ManageAds />} />
