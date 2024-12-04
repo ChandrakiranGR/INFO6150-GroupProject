@@ -112,6 +112,25 @@ const Signup = () => {
         type: formData.type,
       };
 
+      //Include Company details if user is a Advertiser
+
+      if (formData.type === 'Advertiser') {
+        if (!formData.companyName.trim()) {
+          setError('Company Name is required for Advertiser');
+          setIsLoading(false);
+          return;
+        }
+  
+        if (!formData.address.trim()) {
+          setError('Address is required for Advertiser');
+          setIsLoading(false);
+          return;
+        }
+  
+        payload.companyName = formData.companyName.trim();
+        payload.address = formData.address.trim();
+      }
+
       // Include vehicle details if user is a Publisher
       if (formData.type === 'Publisher') {
         payload.vehicleDetails = formData.vehicleDetails;
@@ -255,6 +274,41 @@ const Signup = () => {
               ))}
             </select>
           </div>
+
+          {/* Advertiser specific fields */}
+  {formData.type === 'Advertiser' && (
+  <>
+    <div className="mb-4">
+      <label htmlFor="companyName" className="block mb-2 text-sm font-medium">
+        Company Name
+      </label>
+      <input
+        type="text"
+        id="companyName"
+        name="companyName"
+        value={formData.companyName}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter your company name"
+      />
+    </div>
+    <div className="mb-4">
+      <label htmlFor="address" className="block mb-2 text-sm font-medium">
+        Address
+      </label>
+      <input
+        type="text"
+        id="address"
+        name="address"
+        value={formData.address}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter your address"
+      />
+    </div>
+  </>
+)}
+
 
           {/* Publisher specific vehicle details */}
           {formData.type === 'Publisher' && (
