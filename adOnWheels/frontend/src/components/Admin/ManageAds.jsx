@@ -15,6 +15,7 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const ManageAds = () => {
@@ -23,6 +24,7 @@ const ManageAds = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAd, setSelectedAd] = useState(null);
   const [adminPrice, setAdminPrice] = useState('');
+  const navigate = useNavigate(); // For navigation
 
   const fetchAds = async () => {
     try {
@@ -91,6 +93,15 @@ const ManageAds = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
+      {/* Back Button */}
+      <Button
+        variant="outlined"
+        sx={{ marginBottom: 2 }}
+        onClick={() => navigate(-1)} // Navigates to the previous page
+      >
+        Back
+      </Button>
+
       <Typography variant="h4" mb={3}>
         Manage Ads
       </Typography>
@@ -98,7 +109,7 @@ const ManageAds = () => {
       <Table>
         <TableHead>
           <TableRow>
-          <TableCell>Advertiser Name</TableCell>
+            <TableCell>Advertiser Name</TableCell>
             <TableCell>Advertiser Email</TableCell>
             <TableCell>Title</TableCell>
             <TableCell>Description</TableCell>
