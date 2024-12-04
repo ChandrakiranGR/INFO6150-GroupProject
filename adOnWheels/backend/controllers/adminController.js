@@ -252,4 +252,30 @@ exports.getDashboardStats = async (req, res) => {
       res.status(500).json({ success: false, message: "Server error" });
     }
   };
+  exports.deleteBodyShop = async (req, res) => {
+    try {
+      const { bodyShopId } = req.params;
+
+      if (!bodyShopId) {
+        return res.status(400).json({ success: false, message: 'Body shop ID is required.' });
+      }
+  
+      const bodyShop = await BodyShop.findByIdAndDelete(bodyShopId);
+  
+      if (!bodyShop) {
+        return res.status(404).json({ success: false, message: 'Body shop not found.' });
+      }
+  
+      res.status(200).json({ success: true, message: 'Body shop deleted successfully.' });
+    } catch (error) {
+      console.error('Error deleting body shop:', error.message);
+  
+      if (error.name === 'CastError') {
+        // Invalid MongoDB ObjectId format
+        return res.status(400).json({ success: false, message: 'Invalid body shop ID format.' });
+      }
+  
+      res.status(500).json({ success: false, message: 'Internal server error. Please try again later.' });
+    }
+  };
   
