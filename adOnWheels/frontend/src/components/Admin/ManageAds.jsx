@@ -14,6 +14,10 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  Snackbar,
+  Alert,
+  TableContainer,
+  Paper,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -24,33 +28,33 @@ const ManageAds = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAd, setSelectedAd] = useState(null);
   const [adminPrice, setAdminPrice] = useState('');
-  const navigate = useNavigate(); // For navigation
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+  const navigate = useNavigate();
+
+  // Function to format numbers with commas
+  const formatNumber = (number) => {
+    return number?.toLocaleString('en-US');
+  };
 
   const fetchAds = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log('Fetching ads with token:', token);
-
       const response = await axios.get('http://localhost:5001/api/admin/ads', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log('Ads API response:', response.data);
-
       setAds(
         response.data.ads.map((adObj) => ({
           ...adObj.ad,
           advertiserName: adObj.advertiserName,
           advertiserEmail: adObj.email,
           advertiserBudget: adObj.ad.budget,
+          adminPrice: adObj.ad.adminPrice || 'Not Set', // Handle null adminPrice
           advertiserId: adObj.advertiserId,
         }))
       );
     } catch (err) {
-      console.error('Error fetching ads:', err.message);
-      console.error('Error details:', err.response?.data || 'No additional error details');
       setError('Failed to fetch ads. Please try again later.');
     }
   };
@@ -58,14 +62,11 @@ const ManageAds = () => {
   const handleSetPrice = async () => {
     try {
       if (!adminPrice || parseFloat(adminPrice) <= 0) {
-        alert('Price must be greater than 0.');
+        setSnackbar({ open: true, message: 'Price must be greater than 0.', severity: 'warning' });
         return;
       }
-
       const token = localStorage.getItem('token');
-      console.log(`Setting price for adId: ${selectedAd?._id}, price: ${adminPrice}`);
-
-      await axios.patch(
+      const response = await axios.patch(
         `http://localhost:5001/api/admin/ads/${selectedAd._id}/set-price`,
         { advertiserId: selectedAd.advertiserId, adminPrice: parseFloat(adminPrice) },
         {
@@ -74,31 +75,27 @@ const ManageAds = () => {
           },
         }
       );
-
-      alert('Price set successfully!');
+      setSnackbar({ open: true, message: response.data.message || 'Price set successfully!', severity: 'success' });
       setOpenDialog(false);
-      setAdminPrice(''); // Reset input field
-      fetchAds(); // Refresh ads after setting price
+      setAdminPrice('');
+      fetchAds();
     } catch (err) {
-      console.error('Error setting price:', err.message);
-      console.error('Error details:', err.response?.data || 'No additional error details');
-      alert('Failed to set price. Please try again.');
+      setSnackbar({
+        open: true,
+        message: err.response?.data?.message || 'Failed to set price. Please try again.',
+        severity: 'error',
+      });
     }
   };
 
   useEffect(() => {
-    console.log('ManageAds mounted');
     fetchAds();
   }, []);
 
   return (
     <Box sx={{ padding: 3 }}>
       {/* Back Button */}
-      <Button
-        variant="outlined"
-        sx={{ marginBottom: 2 }}
-        onClick={() => navigate(-1)} // Navigates to the previous page
-      >
+      <Button variant="outlined" sx={{ marginBottom: 2 }} onClick={() => navigate(-1)}>
         Back
       </Button>
 
@@ -106,50 +103,58 @@ const ManageAds = () => {
         Manage Ads
       </Typography>
       {error && <Typography color="error">{error}</Typography>}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Advertiser Name</TableCell>
-            <TableCell>Advertiser Email</TableCell>
-            <TableCell>Title</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Budget</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {ads.length > 0 ? (
-            ads.map((ad) => (
-              <TableRow key={ad._id}>
-                <TableCell>{ad.advertiserName}</TableCell>
-                <TableCell>{ad.advertiserEmail}</TableCell>
-                <TableCell>{ad.title}</TableCell>
-                <TableCell>{ad.description}</TableCell>
-                <TableCell>${ad.advertiserBudget}</TableCell>
-                <TableCell>{ad.status}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={() => {
-                      setSelectedAd(ad); // Set selected ad
-                      setOpenDialog(true); // Open dialog
-                    }}
-                  >
-                    Set Price
-                  </Button>
+
+      <TableContainer component={Paper} sx={{ marginBottom: 3 }}>
+        <Table>
+          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Advertiser Name</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Advertiser Email</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Title</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Description</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Budget</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Admin Price</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {ads.length > 0 ? (
+              ads.map((ad) => (
+                <TableRow key={ad._id} hover>
+                  <TableCell>{ad.advertiserName}</TableCell>
+                  <TableCell>{ad.advertiserEmail}</TableCell>
+                  <TableCell>{ad.title}</TableCell>
+                  <TableCell>{ad.description}</TableCell>
+                  <TableCell>${formatNumber(ad.advertiserBudget)}</TableCell>
+                  <TableCell>
+                    {ad.adminPrice === 'Not Set' ? ad.adminPrice : `$${formatNumber(ad.adminPrice)}`}
+                  </TableCell>
+                  <TableCell>{ad.status}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => {
+                        setSelectedAd(ad);
+                        setOpenDialog(true);
+                      }}
+                    >
+                      Set Price
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  No ads available
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={7} align="center">
-                No ads available
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* Dialog for setting price */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
@@ -176,6 +181,22 @@ const ManageAds = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar for Feedback */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -12,7 +12,7 @@ import ManageAds from './components/Admin/ManageAds';
 import ManagePublishers from './components/Admin/ManagePublishers';
 import ManageBodyShops from './components/Admin/ManageBodyShops';
 import AssignTasks from './components/Admin/AssignTasks';
-
+import ListAllAds from '../src/components/Advertiser/ListAllAds'
 // import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
 // import ManageAds from './components/Advertiser/ManageAds';
 // import ViewProposals from './components/Advertiser/ViewProposals';
