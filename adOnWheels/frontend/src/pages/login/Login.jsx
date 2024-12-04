@@ -3,7 +3,8 @@ import "./Login.css";
 import { Modal, Button } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/slices/authSlice";
 const Login = () => {
   const [show, setShow] = useState(false);
   const [username, setUsername] = useState("");
@@ -12,6 +13,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [apiError, setApiError] = useState("");
+  const dispatch = useDispatch();
 
   const navigate = useNavigate(); // Initialize the navigation hook
 
@@ -25,7 +27,7 @@ const Login = () => {
   const handleUsernameChange = (event) => {
     const value = event.target.value;
     setUsername(value);
-  
+
     // General email validation regex
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regex.test(value) && value !== "") {
@@ -34,7 +36,6 @@ const Login = () => {
       setError("");
     }
   };
-  
 
   const handlePasswordChange = (event) => {
     const value = event.target.value;
@@ -69,12 +70,16 @@ const Login = () => {
         });
 
         const data = await response.json();
+        console.log(data);
+        if (data.token) {
+          dispatch(login({ token: data.token, user: data.type }));
+        }
         console.log("Login Request Payload:", {
           email: username,
           password: password,
           type: userType,
         });
-        
+
         if (response.ok) {
           alert(`Login successful! Welcome, ${userType}`);
           console.log(data.token); // Store token in localStorage or state management for authentication.
@@ -94,7 +99,8 @@ const Login = () => {
               navigate("/bodyshop");
               break;
             default:
-              navigate("/");}
+              navigate("/");
+          }
         } else {
           setApiError(data.message || "An error occurred. Please try again.");
         }
@@ -149,7 +155,9 @@ const Login = () => {
                   value={password}
                   onChange={handlePasswordChange}
                 />
-                {passwordError && <p className="text-danger">{passwordError}</p>}
+                {passwordError && (
+                  <p className="text-danger">{passwordError}</p>
+                )}
               </div>
               <div className="col-12">
                 <label htmlFor="userType" className="form-label">
@@ -194,7 +202,8 @@ const Login = () => {
           <Modal.Title>Forgot Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Please contact the administrator for assistance in changing your password.
+          Please contact the administrator for assistance in changing your
+          password.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
