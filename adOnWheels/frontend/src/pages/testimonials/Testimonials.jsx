@@ -1,5 +1,6 @@
 import React from "react";
 import "./Testimonials.css";
+import Footer from "../../footer";
 
 const Testimonials = () => {
   return (
@@ -39,7 +40,11 @@ const Testimonials = () => {
           </div>
         </div>
       </div>
+      <Footer />
+
     </section>
+    
+
   );
 };
 

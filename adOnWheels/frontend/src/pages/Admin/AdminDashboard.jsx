@@ -23,7 +23,7 @@ const AdminDashboard = () => {
       // Log token
       console.log('Fetching stats with token:', token);
 
-      const response = await axios.get('http://localhost:5001/api/admin/ads', {
+      const response = await axios.get('http://localhost:5001/api/admin/stats', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -32,7 +32,13 @@ const AdminDashboard = () => {
       // Log API response
       console.log('Stats API response:', response.data);
 
-      setStats(response.data);
+      // Update state with correct structure
+      setStats({
+        adsCount: response.data.adsCount,
+        publishersCount: response.data.publishersCount,
+        bodyShopsCount: response.data.bodyShopsCount,
+        pendingTasks: response.data.pendingTasks,
+      });
     } catch (err) {
       console.error('Error fetching stats:', err.message);
       console.error('Error details:', err.response?.data || 'No additional error details');
