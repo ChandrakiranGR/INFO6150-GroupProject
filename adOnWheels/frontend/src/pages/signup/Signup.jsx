@@ -590,11 +590,11 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     if (!validateForm()) return;
-
+  
     setIsLoading(true);
-
+  
     try {
       const payload = {
         name: formData.name.trim(),
@@ -603,32 +603,31 @@ const Signup = () => {
         contactNumber: formData.contactNumber,
         type: formData.type,
       };
-
-      //Include Company details if user is a Advertiser
-
+  
+      //Include Company details if user is an Advertiser
       if (formData.type === "Advertiser") {
         if (!formData.companyName.trim()) {
           setError("Company Name is required for Advertiser");
           setIsLoading(false);
           return;
         }
-
+  
         if (!formData.address.trim()) {
           setError("Address is required for Advertiser");
           setIsLoading(false);
           return;
         }
-
+  
         payload.companyName = formData.companyName.trim();
         payload.address = formData.address.trim();
       }
-
+  
       // Include vehicle details if user is a Publisher
       if (formData.type === "Publisher") {
         payload.vehicleDetails = formData.vehicleDetails;
         payload.address = formData.address;
       }
-
+  
       // For BodyShop, ensure address is provided
       if (formData.type === "BodyShop") {
         if (!formData.address.trim()) {
@@ -638,7 +637,7 @@ const Signup = () => {
         }
         payload.address = formData.address.trim();
       }
-
+  
       const response = await fetch("http://localhost:5001/api/auth/register", {
         method: "POST",
         headers: {
@@ -646,29 +645,37 @@ const Signup = () => {
         },
         body: JSON.stringify(payload),
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(data.message || "Registration failed");
       }
-
+  
+      // Display success message
+      alert("Signup successful! Redirecting...");
+  
+      // Store token and user type in localStorage
       localStorage.setItem("token", data.token);
       localStorage.setItem("userType", data.type);
-
+  
       const redirectMap = {
         Admin: "/login",
         Advertiser: "/login",
         Publisher: "/login",
         BodyShop: "/login",
       };
-
-      window.location.href = redirectMap[data.type] || "/dashboard";
+  
+      // Redirect after a short delay
+      setTimeout(() => {
+        window.location.href = redirectMap[data.type] || "/dashboard";
+      }, 1500); // 1.5 seconds delay
     } catch (err) {
       setError(err.message);
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
