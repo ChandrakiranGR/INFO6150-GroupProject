@@ -19,12 +19,12 @@ import AdOpportunities from "./components/Publisher/AdOpportunities";
 import UpdateAdStatus from "./components/Publisher/UpdateAdStatus";
 import Dashboard from "./components/Advertiser/Dashboard";
 import { loadToken } from "./redux/slices/authSlice";
-
 import Navbarr from "./pages/navbar/Navbarr";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Footer from "./footer";
+
 const App = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.auth.loading);

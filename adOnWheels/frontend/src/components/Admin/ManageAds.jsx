@@ -61,32 +61,35 @@ const ManageAds = () => {
 
   const handleSetPrice = async () => {
     try {
-      if (!adminPrice || parseFloat(adminPrice) <= 0) {
-        setSnackbar({ open: true, message: 'Price must be greater than 0.', severity: 'warning' });
-        return;
-      }
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(
-        `http://localhost:5001/api/admin/ads/${selectedAd._id}/set-price`,
-        { advertiserId: selectedAd.advertiserId, adminPrice: parseFloat(adminPrice) },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        if (!adminPrice || parseFloat(adminPrice) <= 0) {
+            setSnackbar({ open: true, message: 'Price must be greater than 0.', severity: 'warning' });
+            return;
         }
-      );
-      setSnackbar({ open: true, message: response.data.message || 'Price set successfully!', severity: 'success' });
-      setOpenDialog(false);
-      setAdminPrice('');
-      fetchAds();
+        const token = localStorage.getItem('token');
+        const response = await axios.patch(
+            `http://localhost:5001/api/admin/ads/${selectedAd._id}/set-price`,
+            { advertiserId: selectedAd.advertiserId, adminPrice: parseFloat(adminPrice) },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        setSnackbar({ open: true, message: response.data.message || 'Price set successfully!', severity: 'success' });
+        setOpenDialog(false);
+        setAdminPrice('');
+
+        // Fetch updated ads after setting the price
+        fetchAds();
     } catch (err) {
-      setSnackbar({
-        open: true,
-        message: err.response?.data?.message || 'Failed to set price. Please try again.',
-        severity: 'error',
-      });
+        setSnackbar({
+            open: true,
+            message: err.response?.data?.message || 'Failed to set price. Please try again.',
+            severity: 'error',
+        });
     }
-  };
+};
 
   useEffect(() => {
     fetchAds();
@@ -140,7 +143,7 @@ const ManageAds = () => {
                     <Button
                       variant="contained"
                       size="small"
-                      disabled={ad.status === 'Ready for Publishing' || ad.status === 'Declined'}
+                      disabled={ad.status === 'Ready for Publishing' || ad.status === 'Rejected' ||ad.status === 'Accepted'||ad.status === 'Declined' }
                       onClick={() => {
                         setSelectedAd(ad);
                         setOpenDialog(true);
