@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Axios from 'axios';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -18,8 +19,58 @@ const Signup = () => {
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [lat, setLat] = useState(null);
+  const [long, setLong] = useState(null);
+  const [address, setAddress] = useState('');
+
 
   const USER_TYPES = ['Admin', 'Advertiser', 'Publisher', 'BodyShop'];
+
+  const getLocation = () => {
+    console.log('Attempting to get location...');
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('Location obtained:', position.coords);
+          setLat(position.coords.latitude);
+          setLong(position.coords.longitude);
+          const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${position.coords.latitude}&lon=${position.coords.longitude}`;
+  
+          Axios.get(url)
+            .then((response) => {
+              console.log('Address fetched:', response.data.display_name);
+              setAddress(response.data.display_name);
+            })
+            .catch((err) => {
+              console.error('Error fetching address:', err);
+              setError(`Error fetching address: ${err.message}`);
+            });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          let errorMessage = '';
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = 'Location permission denied. Please allow access to your location.';
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = 'Location information is unavailable.';
+              break;
+            case error.TIMEOUT:
+              errorMessage = 'The request to get user location timed out.';
+              break;
+            default:
+              errorMessage = 'An unknown error occurred while fetching location.';
+          }
+          setError(errorMessage);
+        }
+      );
+    } else {
+      setError('Geolocation is not supported by this browser.');
+    }
+  };
+  
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -323,53 +374,65 @@ const Signup = () => {
 
           {/* Publisher specific vehicle details */}
           {formData.type === 'Publisher' && (
-            <>
-              <div className="mb-4">
-                <label htmlFor="vehicleDetails.vehicleType" className="block mb-2 text-sm font-medium">
-                  Vehicle Type
-                </label>
-                <input
-                  type="text"
-                  id="vehicleDetails.vehicleType"
-                  name="vehicleDetails.vehicleType"
-                  value={formData.vehicleDetails.vehicleType}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle type"
-                />
-              </div>
+  <>
+    <div className="mb-4">
+      <label htmlFor="vehicleDetails.vehicleType" className="block mb-2 text-sm font-medium">
+        Vehicle Type
+      </label>
+      <input
+        type="text"
+        id="vehicleDetails.vehicleType"
+        name="vehicleDetails.vehicleType"
+        value={formData.vehicleDetails.vehicleType}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter vehicle type"
+      />
+    </div>
 
-              <div className="mb-4">
-                <label htmlFor="vehicleDetails.vehicleNumber" className="block mb-2 text-sm font-medium">
-                  Vehicle Number
-                </label>
-                <input
-                  type="text"
-                  id="vehicleDetails.vehicleNumber"
-                  name="vehicleDetails.vehicleNumber"
-                  value={formData.vehicleDetails.vehicleNumber}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle number"
-                />
-              </div>
+    <div className="mb-4">
+      <label htmlFor="vehicleDetails.vehicleNumber" className="block mb-2 text-sm font-medium">
+        Vehicle Number
+      </label>
+      <input
+        type="text"
+        id="vehicleDetails.vehicleNumber"
+        name="vehicleDetails.vehicleNumber"
+        value={formData.vehicleDetails.vehicleNumber}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter vehicle number"
+      />
+    </div>
 
-              <div className="mb-4">
-                <label htmlFor="vehicleDetails.location" className="block mb-2 text-sm font-medium">
-                  Vehicle Location
-                </label>
-                <input
-                  type="text"
-                  id="vehicleDetails.location"
-                  name="vehicleDetails.location"
-                  value={formData.vehicleDetails.location}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter vehicle location"
-                />
-              </div>
-            </>
-          )}
+    <div className="mb-4">
+      <label htmlFor="vehicleDetails.location" className="block mb-2 text-sm font-medium">
+        Vehicle Location
+      </label>
+      <input
+        type="text"
+        id="vehicleDetails.location"
+        name="vehicleDetails.location"
+        value={formData.vehicleDetails.location}
+        onChange={handleChange}
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Enter vehicle location"
+      />
+    </div>
+
+    {/* Button to trigger getLocation function */}
+    <div className="mb-4">
+      <button
+        type="button"
+        onClick={getLocation}
+        className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+      >
+        Get Current Location
+      </button>
+    </div>
+  </>
+)}
+
 
           {/* BodyShop address field */}
           {formData.type === 'BodyShop' && (
