@@ -64,13 +64,13 @@ const LandingPage = () => {
     //     </Col>
     //   </Row>
     // </Container>
-    
+
     <Container
       fluid
       className="d-flex align-items-center flex-column flex-md-row landing"
       style={{ height: "100vh" }}
     >
-      <Navbarr />
+      {/* <Navbarr /> */}
       <div className="d-flex flex-column desc-part gap-2">
         <h1 className="line-1">
           Welcome to{" "}

@@ -7,18 +7,20 @@ import Signup from "./pages/signup/Signup";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import CreateAd from "./pages/AdvertiserPages/CreateAd/CreateAd";
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import ManageAds from './components/Admin/ManageAds';
-import ManagePublishers from './components/Admin/ManagePublishers';
-import ManageBodyShops from './components/Admin/ManageBodyShops';
-import AssignTasks from './components/Admin/AssignTasks';
-import ListAllAds from '../src/components/Advertiser/ListAllAds'
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import ManageAds from "./components/Admin/ManageAds";
+import ManagePublishers from "./components/Admin/ManagePublishers";
+import ManageBodyShops from "./components/Admin/ManageBodyShops";
+import AssignTasks from "./components/Admin/AssignTasks";
+import ListAllAds from "../src/components/Advertiser/ListAllAds";
 // import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
 // import ManageAds from './components/Advertiser/ManageAds';
 // import ViewProposals from './components/Advertiser/ViewProposals';
 
 import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard"; // Import the BodyShopDashboard component
 import { loadToken } from "./redux/slices/authSlice";
+import AdOpportunities from "./components/Publisher/AdOpportunities";
+import Navbarr from "./pages/navbar/Navbarr";
 const App = () => {
   const dispatch = useDispatch();
 
@@ -28,7 +30,7 @@ const App = () => {
 
   return (
     <Router>
-      {/* <Navbarr /> */}
+      <Navbarr />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -40,14 +42,11 @@ const App = () => {
         <Route path="/admin/manage-bodyshops" element={<ManageBodyShops />} />
         <Route path="/admin/assign-tasks" element={<AssignTasks />} />
         <Route path="/ads" element={<ListAllAds />} />
-
+        <Route path="/publish" element={<AdOpportunities />} />
         {/* <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
         <Route path="/advertiser/manage-ads" element={<ManageAds />} />
         <Route path="/advertiser/view-proposals" element={<ViewProposals />} /> */}
-        <Route
-          path="/bodyshop-dashboard"
-          element={<BodyShopDashboard />}
-        />{" "}
+        <Route path="/bodyshop-dashboard" element={<BodyShopDashboard />} />{" "}
         {/* Add the route */}
       </Routes>
     </Router>
