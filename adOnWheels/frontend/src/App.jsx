@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./pages/login/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
@@ -37,9 +43,12 @@ const App = () => {
     // Show a loading screen while token is being loaded
     return <div>Loading App...</div>;
   }
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("user");
   return (
     <Router>
       <Navbarr />
+      {/* <RoleBasedRedirect /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -53,32 +62,107 @@ const App = () => {
             <ProtectedRoute element={<AdminDashboard />} allowedType="Admin" />
           }
         />
-        <Route path="/admin/manage-ads" element={<ManageAds />} />
-        <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
-        <Route path="/admin/manage-bodyshops" element={<ManageBodyShops />} />
-        <Route path="/admin/assign-tasks" element={<AssignTasks />} />
-        <Route path="/ads" element={<ListAllAds />} />
+        <Route
+          path="/admin/manage-ads"
+          element={
+            <ProtectedRoute element={<ManageAds />} allowedType="Admin" />
+          }
+        />
+        <Route
+          path="/admin/manage-publishers"
+          element={
+            <ProtectedRoute
+              element={<ManagePublishers />}
+              allowedType="Admin"
+            />
+          }
+        />
+        <Route
+          path="/admin/manage-bodyshops"
+          element={
+            <ProtectedRoute element={<ManageBodyShops />} allowedType="Admin" />
+          }
+        />
+        <Route
+          path="/admin/assign-tasks"
+          element={
+            <ProtectedRoute element={<AssignTasks />} allowedType="Admin" />
+          }
+        />
+        {/* <Route path="/ads" element={<ListAllAds />} /> */}
         <Route
           path="/addashboard"
           element={
             <ProtectedRoute element={<Dashboard />} allowedType="Advertiser" />
           }
         />
-        <Route path="/publisher/dashboard" element={<PublisherDashboard />} />
+        <Route
+          path="/publisher/dashboard"
+          element={
+            <ProtectedRoute
+              element={<PublisherDashboard />}
+              allowedType="Publisher"
+            />
+          }
+        />
         <Route
           path="/publisher/ad-opportunities"
-          element={<AdOpportunities />}
+          element={
+            <ProtectedRoute
+              element={<AdOpportunities />}
+              allowedType="Publisher"
+            />
+          }
         />
         <Route
           path="/publisher/update-ad-status"
-          element={<UpdateAdStatus />}
+          element={
+            <ProtectedRoute
+              element={<UpdateAdStatus />}
+              allowedType="Publisher"
+            />
+          }
         />
-        <Route path="/bodyshop-dashboard" element={<BodyShopDashboard />} />{" "}
-        {/* Add the route */}
+        <Route
+          path="/bodyshop-dashboard"
+          element={
+            <ProtectedRoute
+              element={<BodyShopDashboard />}
+              allowedType="BodyShop"
+            />
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
     </Router>
   );
 };
+const RoleBasedRedirect = () => {
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userRole = localStorage.getItem("user");
+
+    if (token) {
+      // Only redirect if not already on the correct page
+      if (userRole === "Admin" && window.location.pathname !== "/admin") {
+        navigate("/admin");
+      } else if (
+        userRole === "Advertiser" &&
+        window.location.pathname !== "/addashboard"
+      ) {
+        navigate("/addashboard");
+      } else if (
+        userRole === "Publisher" &&
+        window.location.pathname !== "/publisher/dashboard"
+      ) {
+        navigate("/publisher/dashboard");
+      }
+    }
+  }, [navigate]);
+
+  return null; // This component doesn't render anything, just handles redirection.
+};
 export default App;

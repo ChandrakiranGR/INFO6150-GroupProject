@@ -1,101 +1,87 @@
-AdOnWheels
 
-AdOnWheels is a project that integrates a backend and a frontend to provide a seamless web application experience. This README file contains a step-by-step guide to set up and run the project, along with a brief explanation of its functionality.
+# AdOnWheels
 
-Prerequisites
+AdOnWheels is a web platform that connects Advertisers and Publishers for vehicle-based ad campaigns. It streamlines ad management, task assignments, and collaboration among multiple roles, ensuring a seamless experience.
 
-Before running this project, ensure you have the following installed on your system:
+---
 
-React.js
+## Features
 
-Node.js (v14 or higher)
+- Mobile-responsive UI with role-based access control.
+- CRUD operations for ads, proposals, vehicles, and tasks.
+- Secure login using JWT and bcrypt encryption.
+- RESTful APIs for efficient client-server communication.
+- Data persistence with MongoDB.
 
-npm 
+---
 
-MongoDB 
+## Technologies Used
 
-Project Structure
+- **Frontend:** React.js, Material-UI, Bootstrap, CSS.
+- **Backend:** Node.js, Express.js.
+- **Database:** MongoDB.
+- **Authentication:** JWT, bcrypt.
 
-The project is divided into two main directories:
+---
 
-Frontend: Contains the user interface code.
+## Roles & Workflows
 
-Backend: Handles server-side logic, APIs, and database interactions.
+### **Advertiser**
+- Post and manage ads.
+- Approve or decline admin proposals.
 
-Both directories are located inside the adOnWheels folder.
+### **Admin**
+- Manage ads, publishers, and body shop tasks.
+- Assign opportunities and send proposals.
 
-Steps to Run the Project
+### **Publisher**
+- Register vehicles and accept ad opportunities.
+- Manage active and past ads.
 
-1. Clone the Repository
+### **Body Shop**
+- Handle tasks for ad wrapping/stickering.
+- Update task statuses.
 
-Download the project files and navigate to the adOnWheels folder:
+---
 
-git clone <repository-url>
-cd adOnWheels
+## Setup Instructions
 
-2. Setup Backend
+### **Prerequisites**
+- Node.js (v14+), npm, MongoDB.
 
-Navigate to the backend folder:
+### **Backend Setup**
+1. Navigate to `adOnWheels/backend`:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file with required environment variables.
+4. Start the server:
+   ```bash
+   npm start
+   ```
 
-cd backend
+### **Frontend Setup**
+1. Navigate to `adOnWheels/frontend`:
+   ```bash
+   cd ../frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-Install dependencies:
+### **Access**
+- Frontend: [http://localhost:5173](http://localhost:5173)  
+- Backend: [http://localhost:5001](http://localhost:5001)
 
-npm install
+---
 
-Configure the environment:
-
-Create a .env file in the backend directory.
-
-Add the required environment variables (e.g., database URL, port number, API keys).
-
-Start the backend server:
-
-node server.js
-
-The backend should now be running on the specified port (default: http://localhost:5001).
-
-3. Setup Frontend
-
-Navigate to the frontend folder:
-
-cd ../frontend
-
-Install dependencies:
-
-npm install
-
-Start the frontend development server:
-
-npm run dev
-
-The frontend should now be running on the specified port (default: http://localhost:5173).
-
-4. Access the Application
-
-Open your browser and go to http://localhost:5173/ to view the application.
-
-Functionality Overview
-
-Frontend:
-
-Built using modern web technologies like React.
-
-Provides a responsive user interface for interacting with the backend services.
-
-Includes user-friendly components for navigation, data input, and result display.
-
-Backend:
-
-Built using Node.js and Express.js.
-
-Implements RESTful APIs to handle client requests.
-
-Manages database interactions (likely using MongoDB) for storing and retrieving data.
-
-Troubleshooting
-
-If the backend fails to start, ensure MongoDB is running and the .env file is correctly configured.
-
-If the frontend doesn’t load, check for dependency issues or port conflicts.
 
