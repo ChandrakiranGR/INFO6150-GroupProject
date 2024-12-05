@@ -28,7 +28,7 @@ const BodyShopDashboard = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/bodyshops/tasks", {
+        const response = await fetch("http://localhost:5001/api/bodyshops/tasks", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -52,7 +52,7 @@ const BodyShopDashboard = () => {
   const handleStatusUpdate = async (taskId, newStatus) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/bodyshops/tasks/${taskId}`,
+        `http://localhost:5001/api/bodyshops/tasks/${taskId}`,
         {
           method: "PATCH",
           headers: {
@@ -121,7 +121,7 @@ const BodyShopDashboard = () => {
                   <TableRow>
                     <TableCell>Task ID</TableCell>
                     <TableCell>Ad Details</TableCell>
-                    <TableCell>Vehicle</TableCell>
+                    <TableCell>AdId</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
@@ -132,8 +132,8 @@ const BodyShopDashboard = () => {
                     .map((task) => (
                       <TableRow key={task._id}>
                         <TableCell>{task._id}</TableCell>
-                        <TableCell>{task.adId.description}</TableCell>
-                        <TableCell>{task.vehicleDetails}</TableCell>
+                        <TableCell>{task.description}</TableCell>
+                        <TableCell>{task.adId}</TableCell>
                         <TableCell>{task.status}</TableCell>
                         <TableCell>
                           {task.status === "Pending" && (
