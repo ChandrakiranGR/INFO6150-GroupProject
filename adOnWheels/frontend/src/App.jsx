@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./pages/login/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
@@ -37,9 +43,11 @@ const App = () => {
     // Show a loading screen while token is being loaded
     return <div>Loading App...</div>;
   }
+
   return (
     <Router>
       <Navbarr />
+      <RoleBasedRedirect />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -80,28 +88,71 @@ const App = () => {
             <ProtectedRoute element={<AssignTasks />} allowedType="Admin" />
           }
         />
-        <Route path="/ads" element={<ListAllAds />} />
+        {/* <Route path="/ads" element={<ListAllAds />} /> */}
         <Route
           path="/addashboard"
           element={
             <ProtectedRoute element={<Dashboard />} allowedType="Advertiser" />
           }
         />
-        <Route path="/publisher/dashboard" element={<PublisherDashboard />} />
+        <Route
+          path="/publisher/dashboard"
+          element={
+            <ProtectedRoute
+              element={<PublisherDashboard />}
+              allowedType="Publisher"
+            />
+          }
+        />
         <Route
           path="/publisher/ad-opportunities"
-          element={<AdOpportunities />}
+          element={
+            <ProtectedRoute
+              element={<AdOpportunities />}
+              allowedType="Publisher"
+            />
+          }
         />
         <Route
           path="/publisher/update-ad-status"
-          element={<UpdateAdStatus />}
+          element={
+            <ProtectedRoute
+              element={<UpdateAdStatus />}
+              allowedType="Publisher"
+            />
+          }
         />
-        <Route path="/bodyshop-dashboard" element={<BodyShopDashboard />} />{" "}
-        {/* Add the route */}
+        <Route
+          path="/bodyshop-dashboard"
+          element={
+            <ProtectedRoute
+              element={<BodyShopDashboard />}
+              allowedType="BodyShop"
+            />
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
     </Router>
   );
 };
+const RoleBasedRedirect = () => {
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userRole = localStorage.getItem("user");
+
+    if (token && userRole === "Admin") {
+      navigate("/admin");
+    } else if (token && userRole === "Advertiser") {
+      navigate("/addashboard");
+    } else if (token && userRole === "Publisher") {
+      navigate("/publisher/dashboard");
+    }
+  }, [navigate]);
+
+  return null; // This component doesn't render anything, just handles redirection.
+};
 export default App;
