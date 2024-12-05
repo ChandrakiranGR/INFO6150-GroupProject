@@ -16,12 +16,14 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.type = action.payload.type;
       localStorage.setItem("token", action.payload.token); // Save token in localStorage
+      localStorage.setItem("user", action.payload.type);
     },
     logout(state) {
       state.token = null;
       state.isAuthenticated = false;
       state.user = null;
       localStorage.removeItem("token"); // Clear token from localStorage
+      localStorage.removeItem("user");
     },
     loadToken(state) {
       const token = localStorage.getItem("token");
