@@ -53,10 +53,33 @@ const App = () => {
             <ProtectedRoute element={<AdminDashboard />} allowedType="Admin" />
           }
         />
-        <Route path="/admin/manage-ads" element={<ManageAds />} />
-        <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
-        <Route path="/admin/manage-bodyshops" element={<ManageBodyShops />} />
-        <Route path="/admin/assign-tasks" element={<AssignTasks />} />
+        <Route
+          path="/admin/manage-ads"
+          element={
+            <ProtectedRoute element={<ManageAds />} allowedType="Admin" />
+          }
+        />
+        <Route
+          path="/admin/manage-publishers"
+          element={
+            <ProtectedRoute
+              element={<ManagePublishers />}
+              allowedType="Admin"
+            />
+          }
+        />
+        <Route
+          path="/admin/manage-bodyshops"
+          element={
+            <ProtectedRoute element={<ManageBodyShops />} allowedType="Admin" />
+          }
+        />
+        <Route
+          path="/admin/assign-tasks"
+          element={
+            <ProtectedRoute element={<AssignTasks />} allowedType="Admin" />
+          }
+        />
         <Route path="/ads" element={<ListAllAds />} />
         <Route
           path="/addashboard"
