@@ -96,7 +96,7 @@ const Login = () => {
               navigate("/publisher/dashboard");
               break;
             case "BodyShop":
-              navigate("/bodyshop");
+              navigate("/bodyshop-dashboard");
               break;
             default:
               navigate("/");

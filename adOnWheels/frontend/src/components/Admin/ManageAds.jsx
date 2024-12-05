@@ -93,7 +93,12 @@ const ManageAds = () => {
   }, []);
 
   return (
-    <Box sx={{ padding: 3 }}>
+    <Box
+      sx={{
+        padding: 3,
+        marginTop: '80px', // Ensure content starts below the navbar
+      }}
+    >
       {/* Back Button */}
       <Button variant="outlined" sx={{ marginBottom: 2 }} onClick={() => navigate(-1)}>
         Back
@@ -119,42 +124,41 @@ const ManageAds = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-  {ads.length > 0 ? (
-    ads.map((ad) => (
-      <TableRow key={ad._id} hover>
-        <TableCell>{ad.advertiserName}</TableCell>
-        <TableCell>{ad.advertiserEmail}</TableCell>
-        <TableCell>{ad.title}</TableCell>
-        <TableCell>{ad.description}</TableCell>
-        <TableCell>${formatNumber(ad.advertiserBudget)}</TableCell>
-        <TableCell>
-          {ad.adminPrice === 'Not Set' ? ad.adminPrice : `$${formatNumber(ad.adminPrice)}`}
-        </TableCell>
-        <TableCell>{ad.status}</TableCell>
-        <TableCell>
-          <Button
-            variant="contained"
-            size="small"
-            disabled={ad.status === 'Ready for Publishing'}
-            onClick={() => {
-              setSelectedAd(ad);
-              setOpenDialog(true);
-            }}
-          >
-            Set Price
-          </Button>
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={8} align="center">
-        No ads available
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
+            {ads.length > 0 ? (
+              ads.map((ad) => (
+                <TableRow key={ad._id} hover>
+                  <TableCell>{ad.advertiserName}</TableCell>
+                  <TableCell>{ad.advertiserEmail}</TableCell>
+                  <TableCell>{ad.title}</TableCell>
+                  <TableCell>{ad.description}</TableCell>
+                  <TableCell>${formatNumber(ad.advertiserBudget)}</TableCell>
+                  <TableCell>
+                    {ad.adminPrice === 'Not Set' ? ad.adminPrice : `$${formatNumber(ad.adminPrice)}`}
+                  </TableCell>
+                  <TableCell>{ad.status}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      disabled={ad.status === 'Ready for Publishing' || ad.status === 'Declined'}
+                      onClick={() => {
+                        setSelectedAd(ad);
+                        setOpenDialog(true);
+                      }}
+                    >
+                      Set Price
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  No ads available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </TableContainer>
 
