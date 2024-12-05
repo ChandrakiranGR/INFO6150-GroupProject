@@ -121,4 +121,48 @@ exports.getPaymentDetails = async (req, res) => {
     }
 };
 
+exports.respondToAdOpportunity = async (req, res) => {
+    try {
+        const { adAssignmentId } = req.params;
+        const { status } = req.body;
+
+        if (!['Accepted', 'Declined'].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid status value. Use "Accepted" or "Declined".',
+            });
+        }
+
+        const publisher = await Publisher.findOneAndUpdate(
+            { _id: req.user.id, 'adAssignments._id': adAssignmentId },
+            {
+                $set: {
+                    'adAssignments.$.status': status,
+                    'adAssignments.$.updatedAt': Date.now(),
+                },
+            },
+            { new: true }
+        );
+
+        if (!publisher) {
+            return res.status(404).json({
+                success: false,
+                message: 'Ad assignment not found.',
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Ad ${status.toLowerCase()} successfully.`,
+        });
+    } catch (error) {
+        console.error('Error in respondToAdOpportunity:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
+    }
+};
+
+
 

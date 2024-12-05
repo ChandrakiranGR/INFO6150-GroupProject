@@ -12,6 +12,12 @@ import ManageAds from './components/Admin/ManageAds';
 import ManagePublishers from './components/Admin/ManagePublishers';
 import ManageBodyShops from './components/Admin/ManageBodyShops';
 import AssignTasks from './components/Admin/AssignTasks';
+import ListAllAds from '../src/components/Advertiser/ListAllAds'
+import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard";
+import PublisherDashboard from './pages/Publisher/PublisherDashboard';
+import AdOpportunities from './components/Publisher/AdOpportunities';
+import UpdateAdStatus from './components/Publisher/UpdateAdStatus';
+import PaymentDetails from './components/Publisher/PaymentDetails';
 import ListAllAds from './components/Advertiser/ListAllAds';
 import Dashboard from './components/Advertiser/Dashboard';
 // import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
@@ -43,9 +49,10 @@ const App = () => {
         <Route path="/ads" element={<ListAllAds />} />
         <Route path="/addashboard" element={<Dashboard />} />
 
-        {/* <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
-        <Route path="/advertiser/manage-ads" element={<ManageAds />} />
-        <Route path="/advertiser/view-proposals" element={<ViewProposals />} /> */}
+        <Route path="/publisher/dashboard" element={<PublisherDashboard />} />
+        <Route path="/publisher/ad-opportunities" element={<AdOpportunities />} />
+        <Route path="/publisher/update-ad-status" element={<UpdateAdStatus />} />
+        <Route path="/publisher/payment-details" element={<PaymentDetails />} />
         <Route
           path="/bodyshop-dashboard"
           element={<BodyShopDashboard />}

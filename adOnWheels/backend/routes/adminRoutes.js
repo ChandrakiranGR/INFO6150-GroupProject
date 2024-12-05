@@ -9,6 +9,7 @@ const {
     assignTaskToBodyShop,
     getDashboardStats,
     deleteBodyShop,
+    setPublisherPriceForAd,
 } = require('../controllers/adminController');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
@@ -25,6 +26,7 @@ router.post('/proposals', authMiddleware, roleMiddleware('Admin'), createProposa
 // Publisher management
 router.get('/publishers', authMiddleware, roleMiddleware('Admin'), getAllPublishers);
 router.post('/publishers/assign', authMiddleware, roleMiddleware('Admin'), assignAdToPublisher);
+router.post('/ads/publisher-price', authMiddleware, roleMiddleware('Admin'), setPublisherPriceForAd);
 
 // BodyShop management
 router.get('/bodyshops', authMiddleware, roleMiddleware('Admin'), getAllBodyShops);
