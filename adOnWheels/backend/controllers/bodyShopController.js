@@ -3,9 +3,34 @@ const BodyShopTask = require('../models/bodyShopTask');
 const jwt = require('jsonwebtoken');
 
 
+// exports.getAssignedTasks = async (req, res) => {
+//     try {
+//         const tasks = await BodyShopTask.find({ bodyShopId: req.user.id }).populate('adId');
+
+//         if (!tasks || tasks.length === 0) {
+//             return res.status(404).json({ 
+//                 success: false, 
+//                 message: 'No tasks found for the logged-in Body Shop.' 
+//             });
+//         }
+
+//         res.status(200).json({ success: true, tasks });
+//     } catch (error) {
+//         console.error('Error in getAssignedTasks:', error);
+
+//         res.status(500).json({ 
+//             success: false, 
+//             message: 'An error occurred while fetching assigned tasks. Please try again later.' 
+//         });
+//     }
+// };
+
 exports.getAssignedTasks = async (req, res) => {
     try {
-        const tasks = await BodyShopTask.find({ bodyShopId: req.user.id }).populate('adId');
+        // Find tasks assigned to the logged-in body shop
+        const tasks = await BodyShopTask.find({ bodyShopId: req.user.id })
+            // .populate('advertiser') // Populating the Advertiser details
+            // .populate('ad'); // Populating the specific Ad details
 
         if (!tasks || tasks.length === 0) {
             return res.status(404).json({ 
@@ -28,9 +53,10 @@ exports.getAssignedTasks = async (req, res) => {
 
 exports.updateTaskStatus = async (req, res) => {
     try {
+        console.log('Received taskId:', req.params.taskId); 
         const { taskId } = req.params;
         const { status } = req.body;
-
+        
         if (!status || !['Pending', 'In Progress', 'Completed'].includes(status)) {
             return res.status(400).json({ 
                 success: false, 
@@ -40,7 +66,7 @@ exports.updateTaskStatus = async (req, res) => {
 
         const task = await BodyShopTask.findOneAndUpdate(
             { _id: taskId, bodyShopId: req.user.id },
-            { status, updatedAt: Date.now() },
+            { status: status, updatedAt: Date.now() },
             { new: true }
         );
 
