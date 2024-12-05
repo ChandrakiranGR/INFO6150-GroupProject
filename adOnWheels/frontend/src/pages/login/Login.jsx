@@ -71,7 +71,7 @@ const Login = () => {
 
         const data = await response.json();
         console.log(data);
-        if (data.token) {
+        if (data.token && data.type) {
           dispatch(login({ token: data.token, type: data.type }));
         }
         console.log("Login Request Payload:", {
