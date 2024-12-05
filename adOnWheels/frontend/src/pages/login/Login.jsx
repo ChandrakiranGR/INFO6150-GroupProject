@@ -90,7 +90,7 @@ const Login = () => {
               navigate("/admin");
               break;
             case "Advertiser":
-              navigate("/advertiser/dashboard");
+              navigate("/addashboard");
               break;
             case "Publisher":
               navigate("/publisher");
