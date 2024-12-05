@@ -27,9 +27,11 @@ const authSlice = createSlice({
     },
     loadToken(state) {
       const token = localStorage.getItem("token");
+      const type = localStorage.getItem("user");
       if (token) {
         state.token = token;
         state.isAuthenticated = true;
+        state.type = type;
       }
     },
   },
