@@ -19,9 +19,12 @@ import AdOpportunities from "./components/Publisher/AdOpportunities";
 import UpdateAdStatus from "./components/Publisher/UpdateAdStatus";
 import Dashboard from "./components/Advertiser/Dashboard";
 import { loadToken } from "./redux/slices/authSlice";
-
 import Navbarr from "./pages/navbar/Navbarr";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import {disableReactDevTools} from '@fvilers/disable-react-devtools';
+
+if (process.env.NODE_ENV === 'production') disableReactDevTools()
+
 const App = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.auth.loading);
