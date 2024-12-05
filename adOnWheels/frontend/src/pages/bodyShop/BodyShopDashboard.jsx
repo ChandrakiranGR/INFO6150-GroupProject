@@ -28,12 +28,15 @@ const BodyShopDashboard = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:5001/api/bodyshops/tasks", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await fetch(
+          "http://localhost:5001/api/bodyshops/tasks",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const data = await response.json();
         if (response.ok) {
           setTasks(data.tasks); // Assuming the tasks response is in { tasks: [] }
@@ -99,7 +102,9 @@ const BodyShopDashboard = () => {
             width: "300px", // Reduced width for the dropdown
           }}
         >
-          <InputLabel id="task-status-select-label">Filter by Task Status</InputLabel>
+          <InputLabel id="task-status-select-label">
+            Filter by Task Status
+          </InputLabel>
           <Select
             labelId="task-status-select-label"
             id="taskStatus"
@@ -129,7 +134,9 @@ const BodyShopDashboard = () => {
                 </TableHead>
                 <TableBody>
                   {tasks
-                    .filter((task) => taskStatus === "" || task.status === taskStatus)
+                    .filter(
+                      (task) => taskStatus === "" || task.status === taskStatus
+                    )
                     .map((task) => (
                       <TableRow key={task._id}>
                         <TableCell>{task._id}</TableCell>
@@ -141,7 +148,9 @@ const BodyShopDashboard = () => {
                             <Button
                               variant="contained"
                               color="success"
-                              onClick={() => handleStatusUpdate(task._id, "In Progress")}
+                              onClick={() =>
+                                handleStatusUpdate(task._id, "In Progress")
+                              }
                               fullWidth
                             >
                               Start Task
@@ -151,7 +160,9 @@ const BodyShopDashboard = () => {
                             <Button
                               variant="contained"
                               color="primary"
-                              onClick={() => handleStatusUpdate(task._id, "Completed")}
+                              onClick={() =>
+                                handleStatusUpdate(task._id, "Completed")
+                              }
                               fullWidth
                             >
                               Mark as Completed
@@ -166,25 +177,6 @@ const BodyShopDashboard = () => {
           </Grid>
         </Grid>
       </Container>
-
-      <Box
-        component="footer"
-        sx={{
-          backgroundColor: "#212529",
-          color: "#fff",
-          p: 2, // Reduced footer padding for a smaller size
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="body1">About Us</Typography>
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          We are the perfect bridge for you to market and advertise your products to
-          reaching the right customers.
-        </Typography>
-        <Typography variant="body2">
-          © 2024 AdOnWheels. All Rights Reserved.
-        </Typography>
-      </Box>
     </Box>
   );
 };
