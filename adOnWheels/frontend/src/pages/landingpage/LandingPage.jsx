@@ -3,8 +3,10 @@ import { Container, Button } from "react-bootstrap";
 import Badge from "react-bootstrap/Badge";
 import heroImg from "../../assets/hero.jpeg";
 import "./LandingPage.css";
+import { useNavigate } from "react-router-dom";
 import Navbarr from "../navbar/Navbarr";
 const LandingPage = () => {
+  const navigate = useNavigate();
   return (
     // <Container
     //   fluid
@@ -83,7 +85,11 @@ const LandingPage = () => {
           find the perfect solution for your needs! We connect advertisers with
           vehicle owners to create powerful mobile ads.
         </p>
-        <Button className="line-3" variant="success">
+        <Button
+          className="line-3"
+          variant="success"
+          onClick={() => navigate("/signup")}
+        >
           Get Started
         </Button>
       </div>
