@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Typography, Container, Grid, Card, CardContent } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Card,
+  CardContent,
+} from "@mui/material";
 
 const About = () => {
   return (
@@ -30,9 +37,9 @@ const About = () => {
                   Our Mission
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  To provide a one-stop platform for advertisers, body shops, and
-                  publishers, enabling seamless advertising campaigns that reach
-                  the right audience at the right time.
+                  To provide a one-stop platform for advertisers, body shops,
+                  and publishers, enabling seamless advertising campaigns that
+                  reach the right audience at the right time.
                 </Typography>
               </CardContent>
             </Card>
@@ -45,9 +52,9 @@ const About = () => {
                   What We Do
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  AdOnWheels leverages cutting-edge technology to connect businesses
-                  with publishers and advertisers, streamlining the process of
-                  managing ad campaigns and maximizing impact.
+                  AdOnWheels leverages cutting-edge technology to connect
+                  businesses with publishers and advertisers, streamlining the
+                  process of managing ad campaigns and maximizing impact.
                 </Typography>
               </CardContent>
             </Card>
@@ -61,8 +68,8 @@ const About = () => {
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   With a user-friendly platform, a commitment to quality, and
-                  comprehensive support, AdOnWheels empowers businesses to achieve
-                  their marketing goals efficiently.
+                  comprehensive support, AdOnWheels empowers businesses to
+                  achieve their marketing goals efficiently.
                 </Typography>
               </CardContent>
             </Card>
@@ -70,7 +77,7 @@ const About = () => {
         </Grid>
       </Container>
 
-      <Box
+      {/* <Box
         sx={{
           backgroundColor: "#212529",
           color: "#fff",
@@ -95,7 +102,7 @@ const About = () => {
         <Typography variant="body2" sx={{ marginTop: 2 }}>
           © 2024 AdOnWheels. All Rights Reserved.
         </Typography>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

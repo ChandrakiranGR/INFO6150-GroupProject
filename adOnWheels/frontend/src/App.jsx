@@ -22,6 +22,9 @@ import { loadToken } from "./redux/slices/authSlice";
 
 import Navbarr from "./pages/navbar/Navbarr";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Footer from "./footer";
 const App = () => {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.auth.loading);
@@ -40,7 +43,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<About />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/services" element={<Services />} />
         <Route path="/createad" element={<CreateAd />} />
         <Route
           path="/admin"
@@ -68,12 +73,10 @@ const App = () => {
           path="/publisher/update-ad-status"
           element={<UpdateAdStatus />}
         />
-        <Route
-          path="/bodyshop-dashboard"
-          element={<BodyShopDashboard />}
-        />{" "}
+        <Route path="/bodyshop-dashboard" element={<BodyShopDashboard />} />{" "}
         {/* Add the route */}
       </Routes>
+      <Footer />
     </Router>
   );
 };
