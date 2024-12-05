@@ -28,7 +28,7 @@ const BodyShopDashboard = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/bodyshops/tasks", {
+        const response = await fetch("http://localhost:5001/api/bodyshops/tasks", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -52,7 +52,7 @@ const BodyShopDashboard = () => {
   const handleStatusUpdate = async (taskId, newStatus) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/bodyshops/tasks/${taskId}`,
+        `http://localhost:5001/api/bodyshops/tasks/${taskId}`,
         {
           method: "PATCH",
           headers: {
@@ -93,9 +93,9 @@ const BodyShopDashboard = () => {
 
         <FormControl
           sx={{
-            mt: 3,
+            mt: 3, // Gap between the header and dropdown
             mb: 3,
-            width: "300px",
+            width: "300px", // Reduced width for the dropdown
           }}
         >
           <InputLabel id="task-status-select-label">Filter by Task Status</InputLabel>
@@ -112,6 +112,7 @@ const BodyShopDashboard = () => {
           </Select>
         </FormControl>
 
+        {/* Use Grid layout for better responsiveness */}
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TableContainer component={Paper}>
@@ -120,7 +121,7 @@ const BodyShopDashboard = () => {
                   <TableRow>
                     <TableCell>Task ID</TableCell>
                     <TableCell>Ad Details</TableCell>
-                    <TableCell>Vehicle</TableCell>
+                    <TableCell>AdId</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Action</TableCell>
                   </TableRow>
@@ -131,8 +132,8 @@ const BodyShopDashboard = () => {
                     .map((task) => (
                       <TableRow key={task._id}>
                         <TableCell>{task._id}</TableCell>
-                        <TableCell>{task.adId.description}</TableCell>
-                        <TableCell>{task.vehicleDetails}</TableCell>
+                        <TableCell>{task.description}</TableCell>
+                        <TableCell>{task.adId}</TableCell>
                         <TableCell>{task.status}</TableCell>
                         <TableCell>
                           {task.status === "Pending" && (
@@ -170,16 +171,18 @@ const BodyShopDashboard = () => {
         sx={{
           backgroundColor: "#212529",
           color: "#fff",
-          p: 2,
+          p: 2, // Reduced footer padding for a smaller size
           textAlign: "center",
         }}
       >
         <Typography variant="body1">About Us</Typography>
         <Typography variant="body2" sx={{ mb: 1 }}>
-          We are the perfect bridge for you to market and advertise your products
-          to reach the right customers.
+          We are the perfect bridge for you to market and advertise your products to
+          reaching the right customers.
         </Typography>
-        <Typography variant="body2">© 2024 AdOnWheels. All Rights Reserved.</Typography>
+        <Typography variant="body2">
+          © 2024 AdOnWheels. All Rights Reserved.
+        </Typography>
       </Box>
     </Box>
   );
