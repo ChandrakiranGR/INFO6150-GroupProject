@@ -52,17 +52,6 @@ const PublisherDashboard = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <Card>
-            <CardContent>
-              <Typography variant="h5">Payments</Typography>
-              <Typography variant="h6">View your payment records</Typography>
-              <Button
-                variant="contained"
-                sx={{ mt: 2 }}
-                onClick={() => navigate('/publisher/payment-details')}
-              >
-                View Payments
-              </Button>
-            </CardContent>
           </Card>
         </Grid>
       </Grid>
