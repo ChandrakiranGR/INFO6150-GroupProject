@@ -166,7 +166,7 @@
 
 /* Styles for the collapsed navbar */
 .navbar-collapse {
-  background-color: #343a40; /* Set a background color when the navbar collapses */
+  /* background-color: #343a40; Set a background color when the navbar collapses */
   text-align: center;
 }
 
