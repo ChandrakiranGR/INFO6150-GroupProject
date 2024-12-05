@@ -71,8 +71,8 @@ const Login = () => {
 
         const data = await response.json();
         console.log(data);
-        if (data.token) {
-          dispatch(login({ token: data.token, user: data.type }));
+        if (data.token && data.type) {
+          dispatch(login({ token: data.token, type: data.type }));
         }
         console.log("Login Request Payload:", {
           email: username,
@@ -90,10 +90,10 @@ const Login = () => {
               navigate("/admin");
               break;
             case "Advertiser":
-              navigate("/advertiser/dashboard");
+              navigate("/addashboard");
               break;
             case "Publisher":
-              navigate("/publisher");
+              navigate("/publisher/dashboard");
               break;
             case "BodyShop":
               navigate("/bodyshop");
@@ -137,7 +137,7 @@ const Login = () => {
                   type="text"
                   id="email"
                   className="form-control mb-2"
-                  placeholder="Username@northeastern.edu"
+                  placeholder="Email"
                   value={username}
                   onChange={handleUsernameChange}
                 />

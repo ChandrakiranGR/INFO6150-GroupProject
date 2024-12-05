@@ -39,7 +39,7 @@ img {
 }
 @media screen and (max-width: 768px) {
   .landing {
-    margin-top: 90px;
+    margin-top: 40px;
   }
   .desc-part {
     padding: 10px;
@@ -75,9 +75,9 @@ img {
 }
 
 @media screen and (max-width: 480px) {
-  /* .img-part {
+  .img-part {
     margin-top: 20px;
-  } */
+  }
   .landing {
     gap: 30px;
     margin-top: 60px;
