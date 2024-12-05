@@ -1,30 +1,44 @@
 const Publisher = require('../models/publisher');
+const Advertiser = require('../models/advertiser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
 exports.getAdOpportunities = async (req, res) => {
     try {
-        const publisher = await Publisher.findById(req.user.id).populate('adAssignments.adId');
+        console.log(`Fetching ad opportunities for publisher ID: ${req.user.id}`);
 
-        if (!publisher) {
-            return res.status(404).json({
-                success: false,
-                message: 'No publisher found for the logged-in user.',
-            });
-        }
+        const ads = await Advertiser.aggregate([
+            { $unwind: '$ads' }, // Unwind the ads array
+            { $match: { 'ads.status': 'Ready for Publishing' } }, // Filter by "Ready for Publishing" status
+            {
+                $project: {
+                    _id: 0,
+                    adId: '$ads._id', // Send adId from the ads array
+                    title: '$ads.title',
+                    description: '$ads.description',
+                    startDate: '$ads.startDate',
+                    endDate: '$ads.endDate',
+                    budget: '$ads.budget',
+                    adminPrice: '$ads.adminPrice',
+                    advertiserId: '$_id', // The Advertiser ID
+                    advertiserName: '$name',
+                },
+            },
+        ]);
 
-        if (!publisher.adAssignments || publisher.adAssignments.length === 0) {
+        console.log('Matching Ads:', ads);
+
+        if (!ads || ads.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: 'No ad opportunities found for this publisher.',
             });
         }
 
-        res.status(200).json({ success: true, adAssignments: publisher.adAssignments });
+        res.status(200).json({ success: true, ads });
     } catch (error) {
         console.error('Error in getAdOpportunities:', error.message);
-
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching ad opportunities. Please try again later.',
@@ -33,11 +47,13 @@ exports.getAdOpportunities = async (req, res) => {
 };
 
 
+
 exports.updateAdStatus = async (req, res) => {
     try {
-        const { adAssignmentId } = req.params;
+        const { adAssignmentId } = req.params; // This corresponds to ads._id in the Advertiser schema
         const { status } = req.body;
 
+        // Validate status
         if (!status || !['Accepted', 'Declined'].includes(status)) {
             return res.status(400).json({
                 success: false,
@@ -45,28 +61,29 @@ exports.updateAdStatus = async (req, res) => {
             });
         }
 
-        const publisher = await Publisher.findOneAndUpdate(
-            { _id: req.user.id, 'adAssignments._id': adAssignmentId },
+        // Update the ad's status within the Advertiser schema
+        const updatedAd = await Advertiser.updateOne(
+            { 'ads._id': adAssignmentId }, // Locate the ad by its ID
             {
                 $set: {
-                    'adAssignments.$.status': status,
-                    'adAssignments.$.updatedAt': Date.now(),
+                    'ads.$.status': status, // Update the status
+                    'ads.$.updatedAt': Date.now(), // Update the timestamp
                 },
-            },
-            { new: true }
+            }
         );
 
-        if (!publisher) {
+        // Check if any document was modified
+        if (updatedAd.modifiedCount === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'Ad assignment not found for the given ID and logged-in publisher.',
+                message: 'Ad not found or status already updated.',
             });
         }
 
+        // Success response
         res.status(200).json({
             success: true,
             message: `Ad status updated to "${status.toLowerCase()}".`,
-            adAssignments: publisher.adAssignments,
         });
     } catch (error) {
         console.error('Error in updateAdStatus:', error.message);
@@ -74,7 +91,7 @@ exports.updateAdStatus = async (req, res) => {
         if (error.name === 'CastError') {
             return res.status(400).json({
                 success: false,
-                message: 'Invalid ad assignment ID format. Please provide a valid ID.',
+                message: 'Invalid ad ID format. Please provide a valid ID.',
             });
         }
 
@@ -84,6 +101,7 @@ exports.updateAdStatus = async (req, res) => {
         });
     }
 };
+
 
 
 exports.getPaymentDetails = async (req, res) => {
@@ -121,9 +139,10 @@ exports.getPaymentDetails = async (req, res) => {
     }
 };
 
+
 exports.respondToAdOpportunity = async (req, res) => {
     try {
-        const { adAssignmentId } = req.params;
+        const { adId } = req.params;
         const { status } = req.body;
 
         if (!['Accepted', 'Declined'].includes(status)) {
@@ -133,21 +152,21 @@ exports.respondToAdOpportunity = async (req, res) => {
             });
         }
 
-        const publisher = await Publisher.findOneAndUpdate(
-            { _id: req.user.id, 'adAssignments._id': adAssignmentId },
-            {
-                $set: {
-                    'adAssignments.$.status': status,
-                    'adAssignments.$.updatedAt': Date.now(),
-                },
-            },
-            { new: true }
+        // Find and update the ad in the Advertiser collection
+        const updatedAd = await Advertiser.updateOne(
+            { 'ads._id': adId }, // Match the ad by ID
+            { 
+                $set: { 
+                    'ads.$.status': status, 
+                    'ads.$.updatedAt': new Date() 
+                } 
+            }
         );
 
-        if (!publisher) {
+        if (updatedAd.modifiedCount === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'Ad assignment not found.',
+                message: 'Ad not found or already updated.',
             });
         }
 
@@ -163,6 +182,11 @@ exports.respondToAdOpportunity = async (req, res) => {
         });
     }
 };
+
+
+
+
+
 
 
 

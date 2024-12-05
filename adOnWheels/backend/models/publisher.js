@@ -13,7 +13,7 @@ const publisherSchema = new mongoose.Schema({
     },
     adAssignments: [
         {
-            adId: { type: mongoose.Schema.Types.ObjectId, ref: 'Advertiser.ads' },
+            adId: { type: mongoose.Schema.Types.ObjectId, ref: 'Advertiser' }, // Corrected reference
             adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
             status: {
                 type: String,
