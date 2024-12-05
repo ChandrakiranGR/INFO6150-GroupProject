@@ -25,7 +25,7 @@ const Navbarr = () => {
       }}
     >
       <Container>
-        <Navbar.Brand href="#home" className="logo-part">
+        <Navbar.Brand as={Link} to="/" className="logo-part">
           <div className="logo-img">
             <img src={logo} alt="" />
           </div>
