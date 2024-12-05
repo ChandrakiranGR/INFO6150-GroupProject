@@ -1,35 +1,91 @@
-import React, { useState } from 'react';
-import { Box, Typography, Button, Select, MenuItem } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Button, Select, MenuItem, Snackbar, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const UpdateAdStatus = () => {
   const [status, setStatus] = useState('');
   const [selectedAd, setSelectedAd] = useState('');
-  const [message, setMessage] = useState('');
+  const [ads, setAds] = useState([]); // Initialize as empty array
+  const [snackbar, setSnackbar] = useState({ open: false, severity: '', message: '' });
+  const navigate = useNavigate();
 
-  const handleUpdateStatus = async () => {
+  // Fetch ads with "Ready for Publishing" status
+  const fetchAssignedAds = async () => {
     try {
-      await axios.patch(
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:5001/api/publishers/ads', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Log the response for debugging
+      console.log('API Response:', response.data);
+
+      // Update ads array based on the response structure
+      setAds(response.data.ads || []);
+    } catch (err) {
+      console.error('Error fetching ads:', err.message);
+      setAds([]); // Fallback to an empty array
+      setSnackbar({ open: true, severity: 'error', message: 'Failed to fetch ads. Please try again later.' });
+    }
+  };
+
+  // Handle status update
+  const handleUpdateStatus = async () => {
+    if (!selectedAd || !status) {
+      setSnackbar({ open: true, severity: 'warning', message: 'Please select an ad and status.' });
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.patch(
         `http://localhost:5001/api/publishers/ads/${selectedAd}`,
         { status },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      setMessage('Status updated successfully!');
+
+      setSnackbar({ open: true, severity: 'success', message: response.data.message || 'Status updated successfully!' });
+      setSelectedAd('');
+      setStatus('');
+      fetchAssignedAds(); // Refresh ads list
     } catch (err) {
       console.error('Error updating status:', err.message);
-      setMessage('Failed to update status. Please try again later.');
+      setSnackbar({ open: true, severity: 'error', message: 'Failed to update status. Please try again.' });
     }
   };
 
+  useEffect(() => {
+    fetchAssignedAds();
+  }, []);
+
   return (
-    <Box sx={{ padding: 3 }}>
+    <Box
+      sx={{
+        padding: 3,
+        marginTop: '80px', // Ensure navbar does not overlap content
+      }}
+    >
+      {/* Back Button */}
+      <Button
+        variant="outlined"
+        sx={{ marginBottom: 2 }}
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </Button>
+
       <Typography variant="h4" mb={3}>
         Update Ad Status
       </Typography>
+
+      {/* Select Ad Dropdown */}
       <Select
         value={selectedAd}
         onChange={(e) => setSelectedAd(e.target.value)}
@@ -40,10 +96,20 @@ const UpdateAdStatus = () => {
         <MenuItem value="" disabled>
           Select an Ad
         </MenuItem>
-        {/* Example Ad Options */}
-        <MenuItem value="ad1">Ad 1</MenuItem>
-        <MenuItem value="ad2">Ad 2</MenuItem>
+        {ads && ads.length > 0 ? (
+          ads.map((ad) => (
+            <MenuItem key={ad.adId} value={ad.adId}>
+              {ad.title || 'Untitled Ad'}
+            </MenuItem>
+          ))
+        ) : (
+          <MenuItem value="" disabled>
+            No Ads Available
+          </MenuItem>
+        )}
       </Select>
+
+      {/* Select Status Dropdown */}
       <Select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
@@ -57,10 +123,26 @@ const UpdateAdStatus = () => {
         <MenuItem value="Accepted">Accepted</MenuItem>
         <MenuItem value="Declined">Declined</MenuItem>
       </Select>
+
       <Button variant="contained" onClick={handleUpdateStatus}>
         Update Status
       </Button>
-      {message && <Typography sx={{ mt: 2 }}>{message}</Typography>}
+
+      {/* Snackbar for Notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

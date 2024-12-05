@@ -17,7 +17,6 @@ import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard";
 import PublisherDashboard from "./pages/Publisher/PublisherDashboard";
 import AdOpportunities from "./components/Publisher/AdOpportunities";
 import UpdateAdStatus from "./components/Publisher/UpdateAdStatus";
-import PaymentDetails from "./components/Publisher/PaymentDetails";
 import Dashboard from "./components/Advertiser/Dashboard";
 import { loadToken } from "./redux/slices/authSlice";
 
@@ -69,7 +68,6 @@ const App = () => {
           path="/publisher/update-ad-status"
           element={<UpdateAdStatus />}
         />
-        <Route path="/publisher/payment-details" element={<PaymentDetails />} />
         <Route
           path="/bodyshop-dashboard"
           element={<BodyShopDashboard />}

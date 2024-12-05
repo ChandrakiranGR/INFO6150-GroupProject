@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-
 const advertiserSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true, index: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     contactNumber: { type: String, default: null },
-    role: { type: String, default: 'Advertiser' },
     companyName: { type: String, default: null },
     address: { type: String, default: null },
     ads: [
@@ -15,11 +12,7 @@ const advertiserSchema = new mongoose.Schema({
             description: { type: String, required: true },
             startDate: { type: Date, required: true },
             endDate: { type: Date, required: true },
-            budget: {
-                type: Number,
-                required: true,
-                min: [1, 'Budget must be greater than 0'],
-            },
+            budget: { type: Number, required: true },
             adminPrice: { type: Number, default: null },
             status: {
                 type: String,
