@@ -167,3 +167,21 @@ exports.respondToPrice = async (req, res) => {
     }
 };
 
+exports.getStats = async (req, res) => {
+    try {
+        // Fetch the advertiser and ensure they exist
+        const advertiser = await Advertiser.findById(req.user.id);
+        
+        if (!advertiser) {
+            return res.status(404).json({ success: false, message: 'Advertiser not found.' });
+        }
+
+        // Return the advertiser object
+        res.status(200).json(advertiser);
+    } catch (error) {
+        console.error('Error in getStats:', error.message);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+};
+
+
