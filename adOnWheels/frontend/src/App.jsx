@@ -43,12 +43,22 @@ const App = () => {
     // Show a loading screen while token is being loaded
     return <div>Loading App...</div>;
   }
-
+  const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("user");
   return (
     <Router>
       <Navbarr />
-      <RoleBasedRedirect />
+      {/* <RoleBasedRedirect /> */}
       <Routes>
+        {token && userRole === "Admin" && (
+          <Route path="*" element={<Navigate to="/admin" />} />
+        )}
+        {token && userRole === "Advertiser" && (
+          <Route path="*" element={<Navigate to="/addashboard" />} />
+        )}
+        {token && userRole === "Publisher" && (
+          <Route path="*" element={<Navigate to="/publisher/dashboard" />} />
+        )}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
@@ -144,12 +154,21 @@ const RoleBasedRedirect = () => {
     const token = localStorage.getItem("token");
     const userRole = localStorage.getItem("user");
 
-    if (token && userRole === "Admin") {
-      navigate("/admin");
-    } else if (token && userRole === "Advertiser") {
-      navigate("/addashboard");
-    } else if (token && userRole === "Publisher") {
-      navigate("/publisher/dashboard");
+    if (token) {
+      // Only redirect if not already on the correct page
+      if (userRole === "Admin" && window.location.pathname !== "/admin") {
+        navigate("/admin");
+      } else if (
+        userRole === "Advertiser" &&
+        window.location.pathname !== "/addashboard"
+      ) {
+        navigate("/addashboard");
+      } else if (
+        userRole === "Publisher" &&
+        window.location.pathname !== "/publisher/dashboard"
+      ) {
+        navigate("/publisher/dashboard");
+      }
     }
   }, [navigate]);
 
