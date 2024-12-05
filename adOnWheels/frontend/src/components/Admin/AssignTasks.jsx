@@ -11,27 +11,27 @@ const AssignTasks = () => {
     bodyShopId: '',
     description: '',
   });
-  const [approvedAds, setApprovedAds] = useState([]);
+  const [readyAds, setReadyAds] = useState([]);
   const [bodyShops, setBodyShops] = useState([]);
   const [message, setMessage] = useState('');
 
-  const fetchApprovedAds = async () => {
+  const fetchReadyAds = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5001/api/admin/ads?status=Approved', {
+      const response = await axios.get('http://localhost:5001/api/admin/ads?status=Ready for Publishing', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      setApprovedAds(
+      setReadyAds(
         response.data.ads.map((adObj) => ({
           id: adObj.ad._id,
           title: adObj.ad.title,
         }))
       );
     } catch (err) {
-      console.error('Error fetching approved ads:', err.message);
+      console.error('Error fetching ready ads:', err.message);
     }
   };
 
@@ -56,7 +56,7 @@ const AssignTasks = () => {
   };
 
   useEffect(() => {
-    fetchApprovedAds();
+    fetchReadyAds();
     fetchBodyShops();
   }, []);
 
@@ -95,7 +95,7 @@ const AssignTasks = () => {
         Back
       </Button>
 
-      {/* Dropdown for Approved Ads */}
+      {/* Dropdown for Ready Ads */}
       <TextField
         select
         label="Select Ad"
@@ -105,7 +105,7 @@ const AssignTasks = () => {
         fullWidth
         margin="normal"
       >
-        {approvedAds.map((ad) => (
+        {readyAds.map((ad) => (
           <MenuItem key={ad.id} value={ad.id}>
             {ad.title}
           </MenuItem>
@@ -114,21 +114,20 @@ const AssignTasks = () => {
 
       {/* Dropdown for Body Shops */}
       <TextField
-  select
-  label="Select Body Shop"
-  name="bodyShopId"
-  value={taskDetails.bodyShopId}
-  onChange={handleChange}
-  fullWidth
-  margin="normal"
->
-  {bodyShops.map((bodyShop) => (
-    <MenuItem key={bodyShop.id} value={bodyShop.id}>
-      {`${bodyShop.name} (${bodyShop.id.slice(-5)})`}
-    </MenuItem>
-  ))}
-</TextField>
-
+        select
+        label="Select Body Shop"
+        name="bodyShopId"
+        value={taskDetails.bodyShopId}
+        onChange={handleChange}
+        fullWidth
+        margin="normal"
+      >
+        {bodyShops.map((bodyShop) => (
+          <MenuItem key={bodyShop.id} value={bodyShop.id}>
+            {`${bodyShop.name} (${bodyShop.id.slice(-5)})`}
+          </MenuItem>
+        ))}
+      </TextField>
 
       {/* Text Area for Task Description */}
       <TextField
