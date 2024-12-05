@@ -657,10 +657,10 @@ const Signup = () => {
       localStorage.setItem("userType", data.type);
 
       const redirectMap = {
-        Admin: "/admin-dashboard",
-        Advertiser: "/advertiser-dashboard",
-        Publisher: "/publisher-dashboard",
-        BodyShop: "/bodyshop-dashboard",
+        Admin: "/login",
+        Advertiser: "/login",
+        Publisher: "/login",
+        BodyShop: "/login",
       };
 
       window.location.href = redirectMap[data.type] || "/dashboard";
