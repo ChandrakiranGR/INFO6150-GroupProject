@@ -37,17 +37,66 @@ const Navbarr = () => {
         <Navbar.Collapse id="basic-navbar-nav" className="ms-3 ">
           <Nav className="ms-auto">
             {isAuthenticated ? (
-              // <Nav.Link
-              //   role="button"
-              //   onClick={handleLogout}
-              //   className="btn-login"
-              // >
-              //   Logout
-              // </Nav.Link>
               <>
-                <span className="navbar-text me-3">
+                <span className="navbar-text me-3 text-light">
                   Welcome, <strong>{userType}</strong>!
                 </span>
+                {/* {userType === "Admin" && (
+                  <Nav.Link as={Link} to="/admin">
+                    Admin Dashboard
+                  </Nav.Link>
+                )}
+                {userType === "Advertiser" && (
+                  <Nav.Link as={Link} to="/addashboard">
+                    Advertiser Dashboard
+                  </Nav.Link>
+                )}
+                {userType === "Publisher" && (
+                  <Nav.Link as={Link} to="/publisher/dashboard">
+                    Publisher Dashboard
+                  </Nav.Link>
+                )}
+                {userType === "BodyShop" && (
+                  <Nav.Link as={Link} to="/bodyshop-dashboard">
+                    BodyShop Dashboard
+                  </Nav.Link>
+                )} */}
+                {userType === "Admin" && (
+                  <Nav.Link
+                    as={Link}
+                    to="/admin"
+                    className="btn btn-outline-primary mx-2"
+                  >
+                    Admin Dashboard
+                  </Nav.Link>
+                )}
+                {userType === "Advertiser" && (
+                  <Nav.Link
+                    as={Link}
+                    to="/addashboard"
+                    className="btn btn-outline-success mx-2"
+                  >
+                    Advertiser Dashboard
+                  </Nav.Link>
+                )}
+                {userType === "Publisher" && (
+                  <Nav.Link
+                    as={Link}
+                    to="/publisher/dashboard"
+                    className="btn btn-outline-info mx-2"
+                  >
+                    Publisher Dashboard
+                  </Nav.Link>
+                )}
+                {userType === "BodyShop" && (
+                  <Nav.Link
+                    as={Link}
+                    to="/bodyshop-dashboard"
+                    className="btn btn-outline-warning mx-2"
+                  >
+                    BodyShop Dashboard
+                  </Nav.Link>
+                )}
 
                 <button
                   onClick={handleLogout}

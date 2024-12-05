@@ -50,15 +50,6 @@ const App = () => {
       <Navbarr />
       {/* <RoleBasedRedirect /> */}
       <Routes>
-        {token && userRole === "Admin" && (
-          <Route path="*" element={<Navigate to="/admin" />} />
-        )}
-        {token && userRole === "Advertiser" && (
-          <Route path="*" element={<Navigate to="/addashboard" />} />
-        )}
-        {token && userRole === "Publisher" && (
-          <Route path="*" element={<Navigate to="/publisher/dashboard" />} />
-        )}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
