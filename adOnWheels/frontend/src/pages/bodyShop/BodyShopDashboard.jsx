@@ -84,6 +84,7 @@ const BodyShopDashboard = () => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        marginTop: "80px", // Ensure the page content starts below the navbar
       }}
     >
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
