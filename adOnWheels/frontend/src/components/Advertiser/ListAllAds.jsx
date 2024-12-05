@@ -15,7 +15,7 @@ import {
 import { styled } from '@mui/system';
 
 const ListAllAds = () => {
-    const [ads, setAds] = useState([]); // Initialize as an empty array
+    const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -36,7 +36,7 @@ const ListAllAds = () => {
 
                 const adsData = response.data?.ads || [];
                 setAds(adsData);
-                setError(null); // Clear any previous errors
+                setError(null);
             } catch (error) {
                 setError(error.response?.data?.message || 'Failed to fetch ads.');
                 console.error('Error fetching ads:', error);
@@ -48,7 +48,6 @@ const ListAllAds = () => {
         fetchAds();
     }, []);
 
-    // Custom styles for the cards and layout
     const StyledCard = styled(Card)(({ theme }) => ({
         borderRadius: '15px',
         boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
@@ -62,7 +61,6 @@ const ListAllAds = () => {
         color: '#fff',
     }));
 
-    // Function to handle Accept and Deny actions for re-quoted prices
     const handleQuoteAction = async (adId, action) => {
         try {
             const token = localStorage.getItem('token');
@@ -70,22 +68,19 @@ const ListAllAds = () => {
                 setError('No authentication token found.');
                 return;
             }
-    
-            // Determine the correct status based on the action
+
             const newStatus = action === 'accept' ? 'Approved' : 'Rejected';
-    
-            // Send the correct status to the backend
+
             const response = await axios.patch(
                 `http://localhost:5001/api/advertiser/ads/${adId}/response`, 
-                { status: newStatus }, // Send status as Approved or Rejected
+                { status: newStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-    
-            // Refresh ads data after action
+
             setAds((prevAds) =>
                 prevAds.map((ad) =>
                     ad._id === adId
-                        ? { ...ad, status: newStatus } // Update the status to Approved or Rejected
+                        ? { ...ad, status: newStatus }
                         : ad
                 )
             );
@@ -110,21 +105,18 @@ const ListAllAds = () => {
                 Ads Listings
             </Typography>
 
-            {/* Show loading spinner */}
             {loading && (
                 <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
                     <CircularProgress size={80} color="secondary" />
                 </Box>
             )}
 
-            {/* Show error message */}
             {error && (
                 <Alert severity="error" sx={{ marginTop: '20px', fontSize: '1rem', padding: '10px 20px' }}>
                     {error}
                 </Alert>
             )}
 
-            {/* Show list of ads */}
             {!loading && !error && ads.length === 0 && (
                 <Typography variant="h6" sx={{ marginTop: '40px', textAlign: 'center', color: '#7D8B8C' }}>
                     No ads found. Please check back later.
@@ -200,7 +192,6 @@ const ListAllAds = () => {
                                     <strong>Status:</strong> {ad.status}
                                 </Typography>
 
-                                {/* Admin Requoted Price */}
                                 {ad.adminPrice && (
                                     <Typography
                                         sx={{
@@ -213,8 +204,7 @@ const ListAllAds = () => {
                                     </Typography>
                                 )}
 
-                                {/* Accept or Deny Buttons for Admin */}
-                                {ad.status === 'Pending Approval' && (
+                                {ad.adminPrice && ad.status === 'Price Sent' && (
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
                                         <Button
                                             sx={{
@@ -246,18 +236,6 @@ const ListAllAds = () => {
                                         </Button>
                                     </Box>
                                 )}
-
-                                {/* Additional Information */}
-                                <Divider sx={{ marginTop: '20px', backgroundColor: '#fff' }} />
-                                <Typography
-                                    sx={{
-                                        color: '#f1f1f1',
-                                        fontWeight: 'bold',
-                                        marginTop: '20px',
-                                    }}
-                                >
-                                    Last updated: {new Date(ad.createdAt).toLocaleDateString()}
-                                </Typography>
                             </CardContent>
                         </StyledCard>
                     </Grid>

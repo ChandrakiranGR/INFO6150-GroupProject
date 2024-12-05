@@ -3,51 +3,37 @@ const Publisher = require('../models/publisher');
 const BodyShop = require('../models/bodyShop');
 const Proposal = require('../models/Proposal');
 const BodyShopTask = require('../models/bodyShopTask');
+const Ad = require('../models/ad');
 
 // Admin sets price for an ad
 exports.setPriceForAd = async (req, res) => {
     try {
         const { adId } = req.params;
-        const { advertiserId, adminPrice } = req.body;
+        const { adminPrice } = req.body;
 
         if (!adminPrice || adminPrice <= 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Valid admin price is required and must be greater than 0.',
+                message: 'Admin price must be greater than 0.',
             });
         }
 
-        const advertiser = await Advertiser.findById(advertiserId);
-        if (!advertiser) {
-            return res.status(404).json({ success: false, message: 'Advertiser not found.' });
-        }
+        const ad = await Ad.findByIdAndUpdate(
+            adId,
+            { adminPrice, status: 'Ready for Publishing' },
+            { new: true }
+        );
 
-        const ad = advertiser.ads.id(adId);
         if (!ad) {
             return res.status(404).json({ success: false, message: 'Ad not found.' });
         }
 
-        ad.adminPrice = adminPrice;
-        ad.status = 'Price Sent';
-
-        await advertiser.save();
-
-        res.status(200).json({
-            success: true,
-            message: 'Price set successfully.',
-            ad,
-        });
+        res.status(200).json({ success: true, message: 'Price set successfully.', ad });
     } catch (error) {
         console.error('Error in setPriceForAd:', error.message);
-
-        if (error.name === 'CastError') {
-            return res.status(400).json({ success: false, message: 'Invalid advertiser or ad ID format.' });
-        }
-
         res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
-
 
 // Admin views ads by status
 exports.getAdsByStatus = async (req, res) => {
@@ -153,46 +139,48 @@ exports.getAllPublishers = async (req, res) => {
 // Admin assigns an ad to a publisher
 exports.assignAdToPublisher = async (req, res) => {
     try {
-        const { adId, publisherId, payment } = req.body;
+        const { adId, publisherId, publisherPrice } = req.body;
 
-        if (!adId || !publisherId || !payment) {
+        if (!adId || !publisherId || !publisherPrice) {
             return res.status(400).json({
                 success: false,
-                message: 'All fields (adId, publisherId, payment) are required.',
+                message: 'Ad ID, Publisher ID, and Publisher Price are required.',
             });
         }
 
-        if (payment <= 0) {
-            return res.status(400).json({
+        const updatedPublisher = await Publisher.findByIdAndUpdate(
+            publisherId,
+            {
+                $push: {
+                    adAssignments: {
+                        adId,
+                        payment: publisherPrice,
+                    },
+                },
+            },
+            { new: true }
+        );
+
+        if (!updatedPublisher) {
+            return res.status(404).json({
                 success: false,
-                message: 'Payment must be greater than 0.',
+                message: 'Publisher not found.',
             });
         }
 
-        const publisher = await Publisher.findById(publisherId);
-        if (!publisher) {
-            return res.status(404).json({ success: false, message: 'Publisher not found.' });
-        }
-
-        publisher.adAssignments.push({
-            adId,
-            adminId: req.user.id,
-            payment,
+        res.status(200).json({
+            success: true,
+            message: 'Ad assigned to publisher successfully.',
         });
-
-        await publisher.save();
-
-        res.status(201).json({ success: true, message: 'Ad assigned to publisher successfully.' });
     } catch (error) {
         console.error('Error in assignAdToPublisher:', error.message);
-
-        if (error.name === 'CastError') {
-            return res.status(400).json({ success: false, message: 'Invalid ad or publisher ID format.' });
-        }
-
-        res.status(500).json({ success: false, message: 'Internal server error.' });
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
     }
 };
+
 
 
 // Admin views all body shops

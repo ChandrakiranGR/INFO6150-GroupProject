@@ -23,7 +23,7 @@ const AdvertiserDashboard = () => {
                 const pendingAdsCount = advertiser.ads.filter(ad => ad.status === 'Pending Approval').length;
 
                 // Calculate the count of approved ads
-                const approvedAdsCount = advertiser.ads.filter(ad => ad.status === 'Approved').length;
+                const approvedAdsCount = advertiser.ads.filter(ad => ad.status === 'Ready for Publishing').length;
                 
                 setStats({
                     pending: pendingAdsCount,

@@ -7,17 +7,22 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Button,
   Snackbar,
   Alert,
+  TableContainer,
+  Paper,
+  Button,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AdOpportunities = () => {
   const [adOpportunities, setAdOpportunities] = useState([]);
   const [error, setError] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: '' });
+  const navigate = useNavigate();
 
+  // Fetch ad opportunities with status "Ready for Publishing"
   const fetchAdOpportunities = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -26,36 +31,13 @@ const AdOpportunities = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setAdOpportunities(response.data.adAssignments);
-    } catch (err) {
-      setError('Failed to fetch ad opportunities. Please try again later.');
-    }
-  };
 
-  const handleAdStatus = async (adAssignmentId, status) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(
-        `http://localhost:5001/api/publishers/ads/${adAssignmentId}`,
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSnackbar({
-        open: true,
-        message: `Ad ${status.toLowerCase()} successfully!`,
-        severity: 'success',
-      });
-      fetchAdOpportunities(); // Refresh opportunities
+      console.log('Ad opportunities response:', response.data);
+
+      setAdOpportunities(response.data.ads); // Update to match the response structure
     } catch (err) {
-      setSnackbar({
-        open: true,
-        message: 'Failed to update ad status. Please try again.',
-        severity: 'error',
-      });
+      console.error('Error fetching ad opportunities:', err.message);
+      setError('Failed to fetch ad opportunities. Please try again later.');
     }
   };
 
@@ -64,64 +46,62 @@ const AdOpportunities = () => {
   }, []);
 
   return (
-    <Box sx={{ padding: 3 }}>
+    <Box
+      sx={{
+        padding: 3,
+        marginTop: '80px', // Adjusts for fixed navbar height
+      }}
+    >
+      {/* Back Button */}
+      <Button
+        variant="outlined"
+        sx={{ marginBottom: 2 }}
+        onClick={() => navigate(-1)} // Navigate back to the previous page
+      >
+        Back
+      </Button>
+
+      {/* Page Title */}
       <Typography variant="h4" mb={3}>
         Ad Opportunities
       </Typography>
+
+      {/* Error Message */}
       {error && <Typography color="error">{error}</Typography>}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Ad Title</TableCell>
-            <TableCell>Payment</TableCell>
-            <TableCell>Admin Name</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {adOpportunities.length > 0 ? (
-            adOpportunities.map((ad) => (
-              <TableRow key={ad._id}>
-                <TableCell>{ad.adId.title}</TableCell>
-                <TableCell>${ad.payment}</TableCell>
-                <TableCell>{ad.adminId?.name || 'Admin'}</TableCell>
-                <TableCell>{ad.status}</TableCell>
-                <TableCell>
-                  {ad.status === 'Pending' && (
-                    <>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() => handleAdStatus(ad._id, 'Accepted')}
-                        sx={{ mr: 1 }}
-                      >
-                        Accept
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        size="small"
-                        onClick={() => handleAdStatus(ad._id, 'Declined')}
-                      >
-                        Decline
-                      </Button>
-                    </>
-                  )}
+
+      {/* Table for Ad Opportunities */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>Ad Title</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Payment</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Advertiser</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {adOpportunities.length > 0 ? (
+              adOpportunities.map((ad) => (
+                <TableRow key={ad.adId}>
+                  <TableCell>{ad.title}</TableCell>
+                  <TableCell>
+                    {ad.adminPrice != null ? `$${ad.adminPrice.toLocaleString()}` : 'Not Set'}
+                  </TableCell>
+                  <TableCell>{ad.advertiserName}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  No ad opportunities available.
                 </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={5} align="center">
-                No ad opportunities available.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
+      {/* Snackbar for Feedback */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
