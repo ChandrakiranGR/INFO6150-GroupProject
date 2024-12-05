@@ -137,7 +137,7 @@ const Login = () => {
                   type="text"
                   id="email"
                   className="form-control mb-2"
-                  placeholder="Username@northeastern.edu"
+                  placeholder="Email"
                   value={username}
                   onChange={handleUsernameChange}
                 />

@@ -43,9 +43,20 @@ const Signup = () => {
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10}$/;
+    const nameRegex = /^[a-zA-Z\s]+$/;
 
     if (!formData.name.trim()) {
       setError('Full name is required');
+      return false;
+    }
+  
+    if (!nameRegex.test(formData.name.trim())) {
+      setError('Full name can only contain alphabets and spaces');
+      return false;
+    }
+  
+    if (formData.name.trim().length < 3 || formData.name.trim().length > 50) {
+      setError('Full name must be between 3 and 50 characters');
       return false;
     }
 
