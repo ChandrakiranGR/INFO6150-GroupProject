@@ -81,21 +81,20 @@ const AssignTasks = () => {
   };
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" mb={3}>
-        Assign Tasks to Body Shops
-      </Typography>
-
-      {/* Back Button */}
+    <Box sx={{ padding: 3,
+      marginTop: '80px', }}>
       <Button
         variant="outlined"
-        onClick={() => navigate(-1)} // Navigates to the previous page
+        onClick={() => navigate(-1)}
         sx={{ mb: 3 }}
       >
         Back
       </Button>
 
-      {/* Dropdown for Ready Ads */}
+      <Typography variant="h4" mb={3}>
+        Assign Tasks to Body Shops
+      </Typography>
+
       <TextField
         select
         label="Select Ad"
@@ -112,7 +111,6 @@ const AssignTasks = () => {
         ))}
       </TextField>
 
-      {/* Dropdown for Body Shops */}
       <TextField
         select
         label="Select Body Shop"
@@ -129,7 +127,6 @@ const AssignTasks = () => {
         ))}
       </TextField>
 
-      {/* Text Area for Task Description */}
       <TextField
         label="Task Description"
         name="description"
@@ -141,12 +138,10 @@ const AssignTasks = () => {
         rows={3}
       />
 
-      {/* Assign Button */}
       <Button variant="contained" onClick={assignTask} sx={{ mt: 2 }}>
         Assign Task
       </Button>
 
-      {/* Message Display */}
       {message && <Typography sx={{ mt: 2 }}>{message}</Typography>}
     </Box>
   );

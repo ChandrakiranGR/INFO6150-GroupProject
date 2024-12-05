@@ -12,13 +12,13 @@ const PublisherDashboard = () => {
         flexDirection: 'column',
         minHeight: '100vh',
         padding: 3,
+        marginTop: '80px',
       }}
     >
       <Typography variant="h4" mb={3}>
         Publisher Dashboard
       </Typography>
 
-      {/* Dashboard Overview */}
       <Grid container spacing={3} mb={3}>
         <Grid item xs={12} md={4}>
           <Card>
@@ -52,6 +52,7 @@ const PublisherDashboard = () => {
         </Grid>
         <Grid item xs={12} md={4}>
           <Card>
+            {/* Add more features or content here */}
           </Card>
         </Grid>
       </Grid>

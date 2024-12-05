@@ -61,39 +61,47 @@ const ManageAds = () => {
 
   const handleSetPrice = async () => {
     try {
-      if (!adminPrice || parseFloat(adminPrice) <= 0) {
-        setSnackbar({ open: true, message: 'Price must be greater than 0.', severity: 'warning' });
-        return;
-      }
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(
-        `http://localhost:5001/api/admin/ads/${selectedAd._id}/set-price`,
-        { advertiserId: selectedAd.advertiserId, adminPrice: parseFloat(adminPrice) },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        if (!adminPrice || parseFloat(adminPrice) <= 0) {
+            setSnackbar({ open: true, message: 'Price must be greater than 0.', severity: 'warning' });
+            return;
         }
-      );
-      setSnackbar({ open: true, message: response.data.message || 'Price set successfully!', severity: 'success' });
-      setOpenDialog(false);
-      setAdminPrice('');
-      fetchAds();
+        const token = localStorage.getItem('token');
+        const response = await axios.patch(
+            `http://localhost:5001/api/admin/ads/${selectedAd._id}/set-price`,
+            { advertiserId: selectedAd.advertiserId, adminPrice: parseFloat(adminPrice) },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        setSnackbar({ open: true, message: response.data.message || 'Price set successfully!', severity: 'success' });
+        setOpenDialog(false);
+        setAdminPrice('');
+
+        // Fetch updated ads after setting the price
+        fetchAds();
     } catch (err) {
-      setSnackbar({
-        open: true,
-        message: err.response?.data?.message || 'Failed to set price. Please try again.',
-        severity: 'error',
-      });
+        setSnackbar({
+            open: true,
+            message: err.response?.data?.message || 'Failed to set price. Please try again.',
+            severity: 'error',
+        });
     }
-  };
+};
 
   useEffect(() => {
     fetchAds();
   }, []);
 
   return (
-    <Box sx={{ padding: 3 }}>
+    <Box
+      sx={{
+        padding: 3,
+        marginTop: '80px', // Ensure content starts below the navbar
+      }}
+    >
       {/* Back Button */}
       <Button variant="outlined" sx={{ marginBottom: 2 }} onClick={() => navigate(-1)}>
         Back
@@ -119,42 +127,41 @@ const ManageAds = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-  {ads.length > 0 ? (
-    ads.map((ad) => (
-      <TableRow key={ad._id} hover>
-        <TableCell>{ad.advertiserName}</TableCell>
-        <TableCell>{ad.advertiserEmail}</TableCell>
-        <TableCell>{ad.title}</TableCell>
-        <TableCell>{ad.description}</TableCell>
-        <TableCell>${formatNumber(ad.advertiserBudget)}</TableCell>
-        <TableCell>
-          {ad.adminPrice === 'Not Set' ? ad.adminPrice : `$${formatNumber(ad.adminPrice)}`}
-        </TableCell>
-        <TableCell>{ad.status}</TableCell>
-        <TableCell>
-          <Button
-            variant="contained"
-            size="small"
-            disabled={ad.status === 'Ready for Publishing'}
-            onClick={() => {
-              setSelectedAd(ad);
-              setOpenDialog(true);
-            }}
-          >
-            Set Price
-          </Button>
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={8} align="center">
-        No ads available
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
+            {ads.length > 0 ? (
+              ads.map((ad) => (
+                <TableRow key={ad._id} hover>
+                  <TableCell>{ad.advertiserName}</TableCell>
+                  <TableCell>{ad.advertiserEmail}</TableCell>
+                  <TableCell>{ad.title}</TableCell>
+                  <TableCell>{ad.description}</TableCell>
+                  <TableCell>${formatNumber(ad.advertiserBudget)}</TableCell>
+                  <TableCell>
+                    {ad.adminPrice === 'Not Set' ? ad.adminPrice : `$${formatNumber(ad.adminPrice)}`}
+                  </TableCell>
+                  <TableCell>{ad.status}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      disabled={ad.status === 'Ready for Publishing' || ad.status === 'Rejected' ||ad.status === 'Accepted'||ad.status === 'Declined' }
+                      onClick={() => {
+                        setSelectedAd(ad);
+                        setOpenDialog(true);
+                      }}
+                    >
+                      Set Price
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={8} align="center">
+                  No ads available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </TableContainer>
 

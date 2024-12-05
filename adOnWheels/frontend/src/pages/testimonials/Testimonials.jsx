@@ -40,11 +40,8 @@ const Testimonials = () => {
           </div>
         </div>
       </div>
-      <Footer />
-
+      {/* <Footer /> */}
     </section>
-    
-
   );
 };
 

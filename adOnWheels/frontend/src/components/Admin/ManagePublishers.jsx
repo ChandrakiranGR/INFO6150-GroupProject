@@ -46,7 +46,8 @@ const ManagePublishers = () => {
   }, []);
 
   return (
-    <Box sx={{ padding: 3 }}>
+    <Box sx={{ padding: 3,
+      marginTop: '80px',}}>
       {/* Back Button */}
       <Button
         variant="outlined"

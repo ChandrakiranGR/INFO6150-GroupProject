@@ -6,7 +6,7 @@ import axios from 'axios';
 const UpdateAdStatus = () => {
   const [status, setStatus] = useState('');
   const [selectedAd, setSelectedAd] = useState('');
-  const [ads, setAds] = useState([]); // Initialize as empty array
+  const [ads, setAds] = useState([]);
   const [snackbar, setSnackbar] = useState({ open: false, severity: '', message: '' });
   const navigate = useNavigate();
 
@@ -20,14 +20,11 @@ const UpdateAdStatus = () => {
         },
       });
 
-      // Log the response for debugging
       console.log('API Response:', response.data);
-
-      // Update ads array based on the response structure
       setAds(response.data.ads || []);
     } catch (err) {
       console.error('Error fetching ads:', err.message);
-      setAds([]); // Fallback to an empty array
+      setAds([]);
       setSnackbar({ open: true, severity: 'error', message: 'Failed to fetch ads. Please try again later.' });
     }
   };
@@ -54,7 +51,7 @@ const UpdateAdStatus = () => {
       setSnackbar({ open: true, severity: 'success', message: response.data.message || 'Status updated successfully!' });
       setSelectedAd('');
       setStatus('');
-      fetchAssignedAds(); // Refresh ads list
+      fetchAssignedAds();
     } catch (err) {
       console.error('Error updating status:', err.message);
       setSnackbar({ open: true, severity: 'error', message: 'Failed to update status. Please try again.' });
@@ -69,10 +66,9 @@ const UpdateAdStatus = () => {
     <Box
       sx={{
         padding: 3,
-        marginTop: '80px', // Ensure navbar does not overlap content
+        marginTop: '80px',
       }}
     >
-      {/* Back Button */}
       <Button
         variant="outlined"
         sx={{ marginBottom: 2 }}
@@ -85,7 +81,6 @@ const UpdateAdStatus = () => {
         Update Ad Status
       </Typography>
 
-      {/* Select Ad Dropdown */}
       <Select
         value={selectedAd}
         onChange={(e) => setSelectedAd(e.target.value)}
@@ -109,7 +104,6 @@ const UpdateAdStatus = () => {
         )}
       </Select>
 
-      {/* Select Status Dropdown */}
       <Select
         value={status}
         onChange={(e) => setStatus(e.target.value)}
@@ -128,7 +122,6 @@ const UpdateAdStatus = () => {
         Update Status
       </Button>
 
-      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

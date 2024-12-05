@@ -3,37 +3,68 @@ const Publisher = require('../models/publisher');
 const BodyShop = require('../models/bodyShop');
 const Proposal = require('../models/Proposal');
 const BodyShopTask = require('../models/bodyShopTask');
-const Ad = require('../models/ad');
+// const Ad = require('../models/ad');
 
 // Admin sets price for an ad
 exports.setPriceForAd = async (req, res) => {
     try {
         const { adId } = req.params;
-        const { adminPrice } = req.body;
+        const { advertiserId, adminPrice } = req.body;
+
+        console.log('Ad ID:', adId);
+        console.log('Advertiser ID:', advertiserId);
+        console.log('Admin Price:', adminPrice);
 
         if (!adminPrice || adminPrice <= 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Admin price must be greater than 0.',
+                message: 'Valid admin price is required and must be greater than 0.',
             });
         }
 
-        const ad = await Ad.findByIdAndUpdate(
-            adId,
-            { adminPrice, status: 'Ready for Publishing' },
-            { new: true }
-        );
+        // Find the advertiser by ID
+        const advertiser = await Advertiser.findById(advertiserId);
+        if (!advertiser) {
+            console.log('Advertiser not found');
+            return res.status(404).json({ success: false, message: 'Advertiser not found.' });
+        }
 
+        // Find the ad by ID in the ads array
+        const ad = advertiser.ads.id(adId);
         if (!ad) {
+            console.log('Ad not found');
             return res.status(404).json({ success: false, message: 'Ad not found.' });
         }
 
-        res.status(200).json({ success: true, message: 'Price set successfully.', ad });
+        // Update the admin price and status
+        ad.adminPrice = adminPrice;
+        ad.status = 'Price Sent'; // Correctly update the status to "Price Sent"
+
+        console.log('Updating advertiser data...');
+        await advertiser.save(); // Save changes to the database
+
+        res.status(200).json({
+            success: true,
+            message: 'Price set successfully.',
+            ad,
+        });
     } catch (error) {
         console.error('Error in setPriceForAd:', error.message);
-        res.status(500).json({ success: false, message: 'Internal server error.' });
+
+        if (error.name === 'CastError') {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid advertiser or ad ID format.',
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error.',
+        });
     }
 };
+
 
 // Admin views ads by status
 exports.getAdsByStatus = async (req, res) => {
