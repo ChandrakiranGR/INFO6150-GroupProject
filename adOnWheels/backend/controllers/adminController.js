@@ -22,23 +22,26 @@ exports.setPriceForAd = async (req, res) => {
             });
         }
 
+        // Find the advertiser by ID
         const advertiser = await Advertiser.findById(advertiserId);
         if (!advertiser) {
             console.log('Advertiser not found');
             return res.status(404).json({ success: false, message: 'Advertiser not found.' });
         }
 
+        // Find the ad by ID in the ads array
         const ad = advertiser.ads.id(adId);
         if (!ad) {
             console.log('Ad not found');
             return res.status(404).json({ success: false, message: 'Ad not found.' });
         }
 
+        // Update the admin price and status
         ad.adminPrice = adminPrice;
-        ad.status = 'Pending Approval';
+        ad.status = 'Price Sent'; // Correctly update the status to "Price Sent"
 
         console.log('Updating advertiser data...');
-        await advertiser.save();
+        await advertiser.save(); // Save changes to the database
 
         res.status(200).json({
             success: true,
@@ -61,6 +64,7 @@ exports.setPriceForAd = async (req, res) => {
         });
     }
 };
+
 
 // Admin views ads by status
 exports.getAdsByStatus = async (req, res) => {
