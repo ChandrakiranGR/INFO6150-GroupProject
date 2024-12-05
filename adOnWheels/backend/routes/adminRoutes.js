@@ -8,6 +8,7 @@ const {
     getAllBodyShops,
     assignTaskToBodyShop,
     getDashboardStats,
+    deleteBodyShop,
 } = require('../controllers/adminController');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
@@ -28,6 +29,8 @@ router.post('/publishers/assign', authMiddleware, roleMiddleware('Admin'), assig
 // BodyShop management
 router.get('/bodyshops', authMiddleware, roleMiddleware('Admin'), getAllBodyShops);
 router.post('/bodyshops/tasks', authMiddleware, roleMiddleware('Admin'), assignTaskToBodyShop);
+router.delete('/bodyshops/:bodyShopId', authMiddleware, roleMiddleware('Admin'), deleteBodyShop);
+
 
 router.get('/stats', authMiddleware, roleMiddleware('Admin'), getDashboardStats);
 
