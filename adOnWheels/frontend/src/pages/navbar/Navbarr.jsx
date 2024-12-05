@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo1.png";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
 const Navbarr = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const userType = useSelector((state) => state.auth.type);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/");
   };
   return (
     <Navbar
@@ -38,12 +41,18 @@ const Navbarr = () => {
               // >
               //   Logout
               // </Nav.Link>
-              <button
-                onClick={handleLogout}
-                className="btn btn-danger ms-2" // Styling for the button
-              >
-                Logout
-              </button>
+              <>
+                <span className="navbar-text me-3">
+                  Welcome, <strong>{userType}</strong>!
+                </span>
+
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-danger ms-2" // Styling for the button
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <>
                 <Nav.Link href="/">Home</Nav.Link>
