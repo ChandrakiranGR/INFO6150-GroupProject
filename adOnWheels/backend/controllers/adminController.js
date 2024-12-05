@@ -265,6 +265,7 @@ exports.getDashboardStats = async (req, res) => {
       res.status(500).json({ success: false, message: "Server error" });
     }
   };
+  
   exports.deleteBodyShop = async (req, res) => {
     try {
       const { bodyShopId } = req.params;
@@ -291,4 +292,48 @@ exports.getDashboardStats = async (req, res) => {
       res.status(500).json({ success: false, message: 'Internal server error. Please try again later.' });
     }
   };
-  
+
+exports.setPublisherPriceForAd = async (req, res) => {
+    try {
+        const { adId, publisherId, publisherPrice } = req.body;
+
+        if (!publisherPrice || publisherPrice <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Valid publisher price is required and must be greater than 0.',
+            });
+        }
+
+        const publisher = await Publisher.findById(publisherId);
+        if (!publisher) {
+            return res.status(404).json({ success: false, message: 'Publisher not found.' });
+        }
+
+        const adAssignment = publisher.adAssignments.find((assignment) => assignment.adId.toString() === adId);
+        if (!adAssignment) {
+            publisher.adAssignments.push({
+                adId,
+                adminId: req.user.id,
+                status: 'Pending',
+                payment: publisherPrice,
+            });
+        } else {
+            adAssignment.payment = publisherPrice;
+            adAssignment.status = 'Pending';
+            adAssignment.updatedAt = Date.now();
+        }
+
+        await publisher.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Publisher price set successfully.',
+        });
+    } catch (error) {
+        console.error('Error in setPublisherPriceForAd:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error. Please try again later.',
+        });
+    }
+};
