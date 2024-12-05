@@ -446,6 +446,20 @@ const Signup = () => {
             .then((response) => {
               console.log("Address fetched:", response.data.display_name);
               setAddress(response.data.display_name);
+              if (formData.type === "BodyShop") {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  address: response.data.display_name,
+                }));
+              } else {
+                setFormData((prevData) => ({
+                  ...prevData,
+                  vehicleDetails: {
+                    ...prevData.vehicleDetails,
+                    location: response.data.display_name,
+                  },
+                }));
+              }
             })
             .catch((err) => {
               console.error("Error fetching address:", err);
@@ -479,20 +493,30 @@ const Signup = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith("vehicleDetails")) {
-      const fieldName = name.split(".")[1];
+    if (e) {
+      const { name, value } = e.target;
+      if (name.startsWith("vehicleDetails")) {
+        const fieldName = name.split(".")[1];
+        setFormData((prev) => ({
+          ...prev,
+          vehicleDetails: {
+            ...prev.vehicleDetails,
+            [fieldName]: value,
+          },
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      }
+    } else {
       setFormData((prev) => ({
         ...prev,
         vehicleDetails: {
           ...prev.vehicleDetails,
-          [fieldName]: value,
+          [location]: address,
         },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
       }));
     }
   };
@@ -602,6 +626,7 @@ const Signup = () => {
       // Include vehicle details if user is a Publisher
       if (formData.type === "Publisher") {
         payload.vehicleDetails = formData.vehicleDetails;
+        payload.address = formData.address;
       }
 
       // For BodyShop, ensure address is provided
@@ -875,11 +900,21 @@ const Signup = () => {
                 type="text"
                 id="address"
                 name="address"
-                value={formData.address}
+                value={address}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter workshop address"
               />
+              <br />
+              <div className="mb-4">
+                <button
+                  type="button"
+                  onClick={getLocation}
+                  className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                >
+                  Get Current Location
+                </button>
+              </div>
             </div>
           )}
 
