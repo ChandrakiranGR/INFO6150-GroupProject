@@ -192,7 +192,11 @@
   gap: 10px;
 }
 .logo-img {
-  width: 100px;
+  width: 80px;
+}
+.logo-img img {
+  width: 80px;
+  border-radius: 10px;
 }
 
 @media screen and (max-width: 480px) {

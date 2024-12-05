@@ -20,6 +20,9 @@ const Navbarr = () => {
       className="custom-navbar-color fixed-top"
       variant="dark"
       expand="sm"
+      style={{
+        padding: "0",
+      }}
     >
       <Container>
         <Navbar.Brand href="#home" className="logo-part">
