@@ -18,13 +18,7 @@ import PublisherDashboard from './pages/Publisher/PublisherDashboard';
 import AdOpportunities from './components/Publisher/AdOpportunities';
 import UpdateAdStatus from './components/Publisher/UpdateAdStatus';
 import PaymentDetails from './components/Publisher/PaymentDetails';
-import ListAllAds from './components/Advertiser/ListAllAds';
 import Dashboard from './components/Advertiser/Dashboard';
-// import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
-// import ManageAds from './components/Advertiser/ManageAds';
-// import ViewProposals from './components/Advertiser/ViewProposals';
-
-import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard"; // Import the BodyShopDashboard component
 import { loadToken } from "./redux/slices/authSlice";
 const App = () => {
   const dispatch = useDispatch();
