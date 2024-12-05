@@ -6,20 +6,22 @@ import Home from "./pages/home/home";
 import Signup from "./pages/signup/Signup";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import CreateAd from './components/Advertiser/CreateAd';
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import ManageAds from './components/Admin/ManageAds';
-import ManagePublishers from './components/Admin/ManagePublishers';
-import ManageBodyShops from './components/Admin/ManageBodyShops';
-import AssignTasks from './components/Admin/AssignTasks';
-import ListAllAds from '../src/components/Advertiser/ListAllAds'
+import CreateAd from "./components/Advertiser/CreateAd";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import ManageAds from "./components/Admin/ManageAds";
+import ManagePublishers from "./components/Admin/ManagePublishers";
+import ManageBodyShops from "./components/Admin/ManageBodyShops";
+import AssignTasks from "./components/Admin/AssignTasks";
+import ListAllAds from "../src/components/Advertiser/ListAllAds";
 import BodyShopDashboard from "./pages/bodyShop/BodyShopDashboard";
-import PublisherDashboard from './pages/Publisher/PublisherDashboard';
-import AdOpportunities from './components/Publisher/AdOpportunities';
-import UpdateAdStatus from './components/Publisher/UpdateAdStatus';
-import PaymentDetails from './components/Publisher/PaymentDetails';
-import Dashboard from './components/Advertiser/Dashboard';
+import PublisherDashboard from "./pages/Publisher/PublisherDashboard";
+import AdOpportunities from "./components/Publisher/AdOpportunities";
+import UpdateAdStatus from "./components/Publisher/UpdateAdStatus";
+import PaymentDetails from "./components/Publisher/PaymentDetails";
+import Dashboard from "./components/Advertiser/Dashboard";
 import { loadToken } from "./redux/slices/authSlice";
+
+import Navbarr from "./pages/navbar/Navbarr";
 const App = () => {
   const dispatch = useDispatch();
 
@@ -29,7 +31,7 @@ const App = () => {
 
   return (
     <Router>
-      {/* <Navbarr /> */}
+      <Navbarr />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -42,10 +44,15 @@ const App = () => {
         <Route path="/admin/assign-tasks" element={<AssignTasks />} />
         <Route path="/ads" element={<ListAllAds />} />
         <Route path="/addashboard" element={<Dashboard />} />
-
         <Route path="/publisher/dashboard" element={<PublisherDashboard />} />
-        <Route path="/publisher/ad-opportunities" element={<AdOpportunities />} />
-        <Route path="/publisher/update-ad-status" element={<UpdateAdStatus />} />
+        <Route
+          path="/publisher/ad-opportunities"
+          element={<AdOpportunities />}
+        />
+        <Route
+          path="/publisher/update-ad-status"
+          element={<UpdateAdStatus />}
+        />
         <Route path="/publisher/payment-details" element={<PaymentDetails />} />
         <Route
           path="/bodyshop-dashboard"
