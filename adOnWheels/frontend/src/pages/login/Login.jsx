@@ -90,7 +90,7 @@ const Login = () => {
               navigate("/admin");
               break;
             case "Advertiser":
-              navigate("/advertiser/dashboard");
+              navigate("/addashboard");
               break;
             case "Publisher":
               navigate("/publisher");
@@ -137,7 +137,7 @@ const Login = () => {
                   type="text"
                   id="email"
                   className="form-control mb-2"
-                  placeholder="Username@northeastern.edu"
+                  placeholder="Email"
                   value={username}
                   onChange={handleUsernameChange}
                 />

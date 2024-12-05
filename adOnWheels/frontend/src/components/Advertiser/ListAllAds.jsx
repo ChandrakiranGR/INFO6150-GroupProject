@@ -70,21 +70,27 @@ const ListAllAds = () => {
                 setError('No authentication token found.');
                 return;
             }
-
-            const response = await axios.post(
-                `http://localhost:5001/api/advertiser/ads/quote-action`,
-                { adId, action }, // action will be either 'accept' or 'deny'
+    
+            // Determine the correct status based on the action
+            const newStatus = action === 'accept' ? 'Approved' : 'Rejected';
+    
+            // Send the correct status to the backend
+            const response = await axios.patch(
+                `http://localhost:5001/api/advertiser/ads/${adId}/response`, 
+                { status: newStatus }, // Send status as Approved or Rejected
                 { headers: { Authorization: `Bearer ${token}` } }
             );
+    
             // Refresh ads data after action
             setAds((prevAds) =>
                 prevAds.map((ad) =>
                     ad._id === adId
-                        ? { ...ad, status: action === 'accept' ? 'Accepted' : 'Denied' }
+                        ? { ...ad, status: newStatus } // Update the status to Approved or Rejected
                         : ad
                 )
             );
         } catch (error) {
+            setError('Failed to process the action');
             console.error('Error handling quote action:', error);
         }
     };

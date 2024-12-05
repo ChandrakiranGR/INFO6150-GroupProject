@@ -6,13 +6,14 @@ import Home from "./pages/home/home";
 import Signup from "./pages/signup/Signup";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import CreateAd from "./pages/AdvertiserPages/CreateAd/CreateAd";
+import CreateAd from "./components/Advertiser/CreateAd";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import ManageAds from "./components/Admin/ManageAds";
 import ManagePublishers from "./components/Admin/ManagePublishers";
 import ManageBodyShops from "./components/Admin/ManageBodyShops";
 import AssignTasks from "./components/Admin/AssignTasks";
-import ListAllAds from "../src/components/Advertiser/ListAllAds";
+import ListAllAds from "./components/Advertiser/ListAllAds";
+import Dashboard from "./components/Advertiser/Dashboard";
 // import AdvertiserDashboard from './pages/Advertiser/AdvertiserDashboard';
 // import ManageAds from './components/Advertiser/ManageAds';
 // import ViewProposals from './components/Advertiser/ViewProposals';
@@ -35,14 +36,14 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/create" element={<CreateAd />} />
+        <Route path="/createad" element={<CreateAd />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/manage-ads" element={<ManageAds />} />
         <Route path="/admin/manage-publishers" element={<ManagePublishers />} />
         <Route path="/admin/manage-bodyshops" element={<ManageBodyShops />} />
         <Route path="/admin/assign-tasks" element={<AssignTasks />} />
         <Route path="/ads" element={<ListAllAds />} />
-        <Route path="/publish" element={<AdOpportunities />} />
+        <Route path="/addashboard" element={<Dashboard />} />
         {/* <Route path="/advertiser/dashboard" element={<AdvertiserDashboard />} />
         <Route path="/advertiser/manage-ads" element={<ManageAds />} />
         <Route path="/advertiser/view-proposals" element={<ViewProposals />} /> */}
